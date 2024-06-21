@@ -1,0 +1,15 @@
+'''
+Model of the speech intent 'thank you'.
+'''
+import src.ValConstants as v
+
+def __init__(self):
+    self.setCentralNote(["A#3","D4"])
+    self.setPitchRange(9)
+    self.setMode(v.IONIAN)
+    self.setContour(v.DESCENDING)
+    self.setTempo(v.SLOW)
+    self.setRhythm([v.LONG,v.SHORT, v.LONG])
+    self.setLength(3)
+    self.setKey("A#")
+    self.setInterval(v.MAJ2ND)
