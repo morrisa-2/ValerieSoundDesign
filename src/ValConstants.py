@@ -56,3 +56,13 @@ NOTES = ["A0","A#0","B0","C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1",
          "A6","A#6","B6","C7","C#7","D7","D#7","E7","F7","F#7","G7","G#7",
          "A7","A#7","B7","C8","C#8","D8","D#8","E8","F8","F#8","G8","G#8",
          "A8","A#8","B8","C9","C#9","D9","D#9","E9","F9","F#9","G9","G#9"]
+
+DEFAULT_CENTER = "C4"
+DEFAULT_RANGE = 7
+DEFAULT_MODE = IONIAN
+DEFAULT_CONTOUR = BOTH
+DEFAULT_TEMPO = MODERATE
+DEFAULT_RHYTHM = [SHORT,SHORT,LONG]
+DEFAULT_LENGTH = 3
+DEFAULT_KEY = "C"
+DEFAULT_INTERVAL = P5

@@ -36,66 +36,57 @@ Brief explanation of qualities:
 
 import src.ValConstants as v
 
-# Defaults
+class Intent:
+    # Defaults
 
-DEFAULT_CENTER = "C4"
-DEFAULT_RANGE = 7
-DEFAULT_MODE = v.IONIAN
-DEFAULT_CONTOUR = v.BOTH
-DEFAULT_TEMPO = v.MODERATE
-DEFAULT_RHYTHM = [v.SHORT,v.SHORT,v.LONG]
-DEFAULT_LENGTH = 3
-DEFAULT_KEY = "C"
-DEFAULT_INTERVAL = v.P5
+    # Instance vars
+    def __init__(self):
+        centralNote = v.DEFAULT_CENTER
+        pitchRange = v.DEFAULT_RANGE
+        mode = v.DEFAULT_MODE
+        contour = v.DEFAULT_CONTOUR
+        tempo = v.DEFAULT_TEMPO
+        rhythm = v.DEFAULT_RHYTHM
+        length = v.DEFAULT_LENGTH
+        key = v.DEFAULT_KEY
+        interval = v.DEFAULT_INTERVAL
 
-# Instance vars
-def __init__(self):
-    centralNote = DEFAULT_CENTER
-    pitchRange = DEFAULT_RANGE
-    mode = DEFAULT_MODE
-    contour = DEFAULT_CONTOUR
-    tempo = DEFAULT_TEMPO
-    rhythm = DEFAULT_RHYTHM
-    length = DEFAULT_LENGTH
-    key = DEFAULT_KEY
-    interval = DEFAULT_INTERVAL
+    # Getters
+    def getCentralNote(self):
+        return self.centralNote
+    def getPitchRange(self):
+        return self.pitchRange
+    def getMode(self):
+        return self.mode
+    def getContour(self):
+        return self.contour
+    def getTempo(self):
+        return self.tempo
+    def getRhythm(self):
+        return self.rhythm
+    def getLength(self):
+        return self.length
+    def getKey(self):
+        return self.key
+    def getInterval(self):
+        return self.interval
 
-# Getters
-def getCentralNote(self):
-    return self.centralNote
-def getPitchRange(self):
-    return self.pitchRange
-def getMode(self):
-    return self.mode
-def getContour(self):
-    return self.contour
-def getTempo(self):
-    return self.tempo
-def getRhythm(self):
-    return self.rhythm
-def getLength(self):
-    return self.length
-def getKey(self):
-    return self.key
-def getInterval(self):
-    return self.interval
-
-# Setters
-def setCentralNote(self,note):
-    self.centralNote = note
-def setPitchRange(self,range):
-    self.pitchRange = range
-def setMode(self,mode):
-    self.mode = mode
-def setContour(self,contour):
-    self.contour = contour
-def setTempo(self,tempo):
-    self.tempo = tempo
-def setRhythm(self,rhythm):
-    self.rhythm = rhythm
-def setLength(self,length):
-    self.length = length
-def setKey(self,key):
-    self.key = key
-def setInterval(self,interval):
-    self.interval = interval
+    # Setters
+    def setCentralNote(self,note):
+        self.centralNote = note
+    def setPitchRange(self,range):
+        self.pitchRange = range
+    def setMode(self,mode):
+        self.mode = mode
+    def setContour(self,contour):
+        self.contour = contour
+    def setTempo(self,tempo):
+        self.tempo = tempo
+    def setRhythm(self,rhythm):
+        self.rhythm = rhythm
+    def setLength(self,length):
+        self.length = length
+    def setKey(self,key):
+        self.key = key
+    def setInterval(self,interval):
+        self.interval = interval

@@ -10,14 +10,15 @@ import Intents.Intent
 import Variation
 import ValConstants as v
 
-def __init__(self,intent):
-    if (intent is type(Intents.Intent)):
-        self.intent = intent
-    else:
-        self.intent = Intents.Intent
+class VariationGen:
+    def __init__(self,intent):
+        if (intent is type(Intents.Intent)):
+            self.intent = intent
+        else:
+            self.intent = Intents.Intent
 
-def generate(self):
-    pass
+    def generate(self):
+        pass
 
-def getIntent(self):
-    return self.intent
+    def getIntent(self):
+        return self.intent
