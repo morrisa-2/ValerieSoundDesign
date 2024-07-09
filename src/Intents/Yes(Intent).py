@@ -6,7 +6,7 @@ import Intent
 
 class Yes(Intent):
     def __init__(self):
-        self.setCentralNote("G3")
+        self.setCentralNote(v.NOTES.index("G3"))
         self.setPitchRange(5)
         self.setMode(v.IONIAN)
         self.setContour(v.ASCENDING)

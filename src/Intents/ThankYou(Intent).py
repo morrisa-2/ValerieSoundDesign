@@ -6,7 +6,7 @@ import Intent
 
 class ThankYou(Intent):
     def __init__(self):
-        self.setCentralNote(["A#3","D4"])
+        self.setCentralNote([v.NOTES.index("A#3"),v.NOTES.index("D4")])
         self.setPitchRange(9)
         self.setMode(v.IONIAN)
         self.setContour(v.DESCENDING)

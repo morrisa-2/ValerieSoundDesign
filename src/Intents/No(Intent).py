@@ -6,7 +6,7 @@ import Intent
 
 class No(Intent):
     def __init__(self):
-        self.setCentralNote(["G3","F#3"])
+        self.setCentralNote([v.NOTES.index("G3"),v.NOTES.index("F#3")])
         self.setPitchRange(7)
         self.setMode(v.AEOLIAN)
         self.setContour(v.DESCENDING)

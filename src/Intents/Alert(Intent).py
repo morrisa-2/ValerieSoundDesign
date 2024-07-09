@@ -6,7 +6,7 @@ import Intent
 
 class Alert(Intent):
     def __init__(self):
-        self.setCentralNote("F#7")
+        self.setCentralNote(v.NOTES.index("F#7"))
         self.setPitchRange(11)
         self.setMode(v.LYDIAN)
         self.setContour(v.DESCENDING)

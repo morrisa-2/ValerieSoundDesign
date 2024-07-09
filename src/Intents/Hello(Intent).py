@@ -5,7 +5,7 @@ import src.ValConstants as v
 import Intent
 class Hello(Intent):
     def __init__(self):
-        self.setCentralNote("D4")
+        self.setCentralNote(v.NOTES.index("D4"))
         self.setPitchRange(9)
         self.setMode(v.IONIAN)
         self.setContour(v.BOTH)

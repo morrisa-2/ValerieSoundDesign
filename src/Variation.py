@@ -12,30 +12,28 @@ import ValConstants as v
 
 class Variation:
     def __init__(self,intent,contents):
-        if (intent is type(Intents.Intent)):
-            self.intent = intent
-        else:
-            self.intent = Intents.Intent
+        self.intent = intent
         self.contents = contents
 
     def getIntent(self):
         return self.intent
 
+    def inRange(self,pitch):
+        centralNote = self.intent.getCentralNote()
+        pitchRange = self.intent.getPitchRange()
+        rangeMin = centralNote - pitchRange
+        rangeMax = centralNote + pitchRange
+        if(pitch in v.NOTES):
+            pitchIndex = v.NOTES.index(pitch)
+            return pitchIndex < rangeMax and pitchIndex > rangeMin
+        else:
+            raise ValueError('Unrecognized note name.')
+
     def populate(self):
+        availableNotes = self.findAvailableNotes()
+
         '''
-             1.    Find intent central note in the notes list
-             2.    Combine key, mode, and pitch range to select which
-                  notes are available to this variation.
-                      2a. Add all notes within the given pitch range
-                          to a list.
-                      2b. Find the first instance of the key center
-                           in the list.
-                       2c. Add key center to separate list.
-                       2d. Increment based on modal steps, adding each
-                           selection to the new list until the end is
-                           exceeded.
-                       2e. Repeat 2d backwards, starting from the end
-                           of the modal list.
+             
              3.    Select a starting note.
                        3a. Restrain selection to half of available notes
                            based on contour. If the intent has a descending
@@ -81,3 +79,51 @@ class Variation:
                            such: "C5=0.5 G4=2 A4=1".
             '''
         pass
+
+    def findAvailableNotes(self):
+        fullRange = self.findFullRange()
+        return self.listOfAvailable(fullRange)
+
+    def findKeyCenter(self,fullRange):
+        key = self.intent.getKey()
+        notFound = True
+        i = 0
+        centralIndex = 0
+        while (notFound & i < len(fullRange)):
+            note = fullRange[i]
+            if key in note:
+                # Found a matching note name to the key center--check if pitch matches.
+                matchPitch = ('#' in key and '#' in note) or ('#' not in key and '#' not in note)
+                if matchPitch:
+                    notFound = False
+                    return i
+        if (notFound):
+            raise IndexError('Key center not present in the given range.')
+
+    def listOfAvailable(self,fullRange):
+        centralIndex = self.findKeyCenter(fullRange)
+        mode = self.intent.getMode()
+        pitchRange = self.intent.getPitchRange()
+        availableNotes = []
+        i = centralIndex
+        j = 0
+        while (i < (2 * pitchRange + 1)):
+            availableNotes.append(fullRange[i])
+            i += mode[j]
+            j += 1
+        j = -1
+        i = centralIndex
+        while (i > (-(2 * pitchRange + 1))):
+            i -= mode[j]
+            availableNotes.append(fullRange)
+            j -= 1
+        return availableNotes
+
+    def findFullRange(self):
+        centralNote = self.intent.getCentralNote()
+        pitchRange = self.intent.getPitchRange()
+        if (centralNote - pitchRange > 0 & centralNote + pitchRange < len(v.NOTES)):
+            fullRange = [pitch for pitch in v.NOTES if self.inRange(pitch)]
+            return fullRange
+        else:
+            raise ValueError('Given range exceeds available pitches.')

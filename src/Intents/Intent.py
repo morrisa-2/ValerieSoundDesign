@@ -90,3 +90,4 @@ class Intent:
         self.key = key
     def setInterval(self,interval):
         self.interval = interval
+        

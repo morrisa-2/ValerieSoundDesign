@@ -6,7 +6,7 @@ import Intent
 
 class Goodbye(Intent):
     def __init__(self):
-        self.setCentralNote("F#3")
+        self.setCentralNote(v.NOTES.index("F#3"))
         self.setPitchRange(8)
         self.setMode(v.IONIAN)
         self.setContour(v.DESCENDING)

@@ -6,7 +6,7 @@ import Intent
 
 class Unsure(Intent):
     def __init__(self):
-        self.setCentralNote(["G#3","F3"])
+        self.setCentralNote([v.NOTES.index("G#3"),v.NOTES.index("F3")])
         self.setPitchRange(9)
         self.setMode(v.AEOLIAN)
         self.setContour(v.BOTH)

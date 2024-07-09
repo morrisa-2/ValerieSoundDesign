@@ -6,7 +6,7 @@ import Intent
 
 class Query(Intent):
     def __init__(self):
-        self.setCentralNote("C#4")
+        self.setCentralNote(v.NOTES.index("C#4"))
         self.setPitchRange(9)
         self.setMode(v.AEOLIAN)
         self.setContour(v.ASCENDING)
