@@ -44,6 +44,7 @@ class Variation:
 
     def populate(self):
         availableNotes = self.findAvailableNotes()
+        toPlay = self.start(availableNotes)
         '''   
              3.    Select a starting note.
                        3a. Restrain selection to half of available notes
@@ -90,6 +91,18 @@ class Variation:
                            such: "C5=0.5 G4=2 A4=1".
             '''
         pass
+
+    def start(self,availableNotes):
+        """
+        Selects the first note of this variation. Selection
+        is restrained to half of available notes based on contour.
+        If the intent has a descending contour, only select the
+        central note or above, and vice versa.
+        :param availableNotes: List of notes this variation can select from.
+        :return: A list containing the first note of this variation.
+        """
+        pass
+
 
     def findAvailableNotes(self):
         fullRange = self.findFullRange()
