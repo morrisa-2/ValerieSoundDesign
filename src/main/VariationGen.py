@@ -10,13 +10,17 @@ Invariant:
 
 class VariationGen:
     def __init__(self,intent):
-        if (intent is type(src.main.Intents.Intent)):
-            self.intent = intent
-        else:
-            self.intent = src.main.Intents.Intent
+        # TODO: Check whether intent is valid.
+        self.intent = intent
 
     def generate(self):
         pass
 
-    def getIntent(self):
-        return self.intent
+    def __str__(self):
+        """
+        Returns a string representation of this
+        VariationGen.
+        :return: A string representing this VariationGen.
+        Ex. "VarGen: MyVarGen (Intent)"
+        """
+        return "VarGen: " + self.__name__ + " (" + self.intent.__class__.__name__ + ")"

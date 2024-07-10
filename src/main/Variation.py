@@ -12,12 +12,14 @@ import src.main.ValConstants as v
 
 class Variation:
     def __init__(self,intent):
+        """
+        Non-default constructor.
+        :param intent: Intent to generate variation of.
+        Must be an Intent object or a child of Intent.
+        """
         # TODO: Check whether given intent is valid
         self.intent = intent
-        self.contents = []
-
-    def getIntent(self):
-        return self.intent
+        self.contents = self.populate()
 
     def inRange(self,pitch):
         centralNote = self.intent.getCentralNote()
@@ -30,11 +32,19 @@ class Variation:
         else:
             raise ValueError('Unrecognized note name.')
 
+    # Uncomment when populate is functional.
+    # def __str__(self):
+    #     """
+    #     Returns a string representation of this
+    #     variation.
+    #     :return: A string representing this variation.
+    #     Ex. "C5=0.5 G4=2 A3=1 (Intent)"
+    #     """
+    #     return str(self.contents + " ("+self.intent+")")
+
     def populate(self):
         availableNotes = self.findAvailableNotes()
-
-        '''
-             
+        '''   
              3.    Select a starting note.
                        3a. Restrain selection to half of available notes
                            based on contour. If the intent has a descending

@@ -37,8 +37,6 @@ Brief explanation of qualities:
 import src.main.ValConstants as v
 
 class Intent:
-    # Defaults
-
     # Instance vars
     def __init__(self):
         self.centralNote = v.DEFAULT_CENTER
@@ -90,4 +88,12 @@ class Intent:
         self.key = key
     def setInterval(self,interval):
         self.interval = interval
-        
+
+    def __str__(self):
+        """
+        Returns a string representation of this
+        intent.
+        :return: A string representing this intent.
+        Ex. "Hello"
+        """
+        return self.__class__.__name__
