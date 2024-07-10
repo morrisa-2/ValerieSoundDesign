@@ -1,7 +1,7 @@
 '''
 Model of the speech intent 'query'.
 '''
-import src.ValConstants as v
+import src.main.ValConstants as v
 import Intent
 
 class Query(Intent):

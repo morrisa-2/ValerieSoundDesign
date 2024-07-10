@@ -7,13 +7,14 @@ Invariant:
  -  A Variation also has reference to the Intent from which it was generated,
     but not the VariationGen that produced it.
 """
-import Intents.Intent
-import ValConstants as v
+import src.main.Intents.Intent
+import src.main.ValConstants as v
 
 class Variation:
-    def __init__(self,intent,contents):
+    def __init__(self,intent):
+        # TODO: Check whether given intent is valid
         self.intent = intent
-        self.contents = contents
+        self.contents = []
 
     def getIntent(self):
         return self.intent
@@ -25,7 +26,7 @@ class Variation:
         rangeMax = centralNote + pitchRange
         if(pitch in v.NOTES):
             pitchIndex = v.NOTES.index(pitch)
-            return pitchIndex < rangeMax and pitchIndex > rangeMin
+            return pitchIndex <= rangeMax and pitchIndex >= rangeMin
         else:
             raise ValueError('Unrecognized note name.')
 
@@ -97,6 +98,8 @@ class Variation:
                 if matchPitch:
                     notFound = False
                     return i
+            else:
+                i += 1
         if (notFound):
             raise IndexError('Key center not present in the given range.')
 
@@ -107,15 +110,15 @@ class Variation:
         availableNotes = []
         i = centralIndex
         j = 0
-        while (i < (2 * pitchRange + 1)):
+        while (i < len(fullRange)):
             availableNotes.append(fullRange[i])
             i += mode[j]
             j += 1
         j = -1
         i = centralIndex
-        while (i > (-(2 * pitchRange + 1))):
+        while (i > 0):
             i -= mode[j]
-            availableNotes.append(fullRange)
+            availableNotes.insert(0,fullRange[i])
             j -= 1
         return availableNotes
 

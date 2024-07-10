@@ -1,7 +1,7 @@
 '''
 Model of the speech intent 'hello'.
 '''
-import src.ValConstants as v
+import src.main.ValConstants as v
 import Intent
 class Hello(Intent):
     def __init__(self):

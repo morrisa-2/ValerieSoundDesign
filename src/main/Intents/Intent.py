@@ -34,22 +34,22 @@ Brief explanation of qualities:
                 ascending.
 '''
 
-import src.ValConstants as v
+import src.main.ValConstants as v
 
 class Intent:
     # Defaults
 
     # Instance vars
     def __init__(self):
-        centralNote = v.DEFAULT_CENTER
-        pitchRange = v.DEFAULT_RANGE
-        mode = v.DEFAULT_MODE
-        contour = v.DEFAULT_CONTOUR
-        tempo = v.DEFAULT_TEMPO
-        rhythm = v.DEFAULT_RHYTHM
-        length = v.DEFAULT_LENGTH
-        key = v.DEFAULT_KEY
-        interval = v.DEFAULT_INTERVAL
+        self.centralNote = v.DEFAULT_CENTER
+        self.pitchRange = v.DEFAULT_RANGE
+        self.mode = v.DEFAULT_MODE
+        self.contour = v.DEFAULT_CONTOUR
+        self.tempo = v.DEFAULT_TEMPO
+        self.rhythm = v.DEFAULT_RHYTHM
+        self.length = v.DEFAULT_LENGTH
+        self.key = v.DEFAULT_KEY
+        self.interval = v.DEFAULT_INTERVAL
 
     # Getters
     def getCentralNote(self):
