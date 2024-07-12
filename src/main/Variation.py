@@ -63,7 +63,8 @@ class Variation:
         '''
         pass
 
-
+    def selectNote(self,availableNotes,toAdd):
+        pass
 
     '''   
     4. Select next note.
