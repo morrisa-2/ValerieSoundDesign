@@ -7,6 +7,8 @@ Invariant:
  -  A Variation also has reference to the Intent from which it was generated,
     but not the VariationGen that produced it.
 """
+import random
+
 import src.main.Intents.Intent
 import src.main.ValConstants as v
 
@@ -45,38 +47,7 @@ class Variation:
     def populate(self):
         availableNotes = self.findAvailableNotes()
         toPlay = self.start(availableNotes)
-        '''   
-             3.    Select a starting note.
-                       3a. Restrain selection to half of available notes
-                           based on contour. If the intent has a descending
-                           contour, only select the central note or above,
-                           and vice versa.
-             4.    Select next note.
-                       4a. Check whether the central note has been selected
-                           already. If so, ignore 4b and 4c.
-                       4b. Check distance between this note and the central
-                           note in the list of this variation's full range.
-                           If that distance is the interval of this intent,
-                           select the central note immediately.
-                       4c. Randomly select whether to play the central note
-                           or another note in the available range. Proportions
-                           are based on the remaining length of the variation. For instance,
-                           if a variation has 2 notes remaining and neither 4a nor 4b is
-                           satisfied, there is a 50% chance the central note will be
-                           selected. If the central note is not selected this time around,
-                           the chance it is selected in the next iteration becomes 100%.
-                       4d. Select whether the next note will ascend or descend. If the
-                           intent has an ascending contour, it is more likely to choose
-                           a note above the selection if there is room to do so. The
-                           inverse is true of a descending contour.
-                       4e. Check whether this intent's interval is already present.
-                           If so, ignore 4f.
-                       4f. Check whether the desired interval is possible to reach
-                           in the given direction. If so, select whether to choose
-                           this interval or another to insert. This choice is similarly
-                           proportioned to the selection of the central note--see above
-                           for details.
-                       4g. Insert the note provided by a movement of this interval.
+        '''
              5.     Repeat step 4 until the variation is of the desired length.
              6.     Add the length of each note to the variation.
                        6a. These are denoted by the rhythmic descriptors in
@@ -89,8 +60,39 @@ class Variation:
              7.     Combine the list of notes into a single string and return it.
                        7a. Keeping with the example above, the string should be formatted as
                            such: "C5=0.5 G4=2 A4=1".
-            '''
+        '''
         pass
+
+
+
+    '''   
+    4. Select next note.
+       4a. Check whether the central note has been selected
+           already. If so, ignore 4b and 4c.
+       4b. Check distance between this note and the central
+           note in the list of this variation's full range.
+           If that distance is the interval of this intent,
+           select the central note immediately.
+       4c. Randomly select whether to play the central note
+           or another note in the available range. Proportions
+           are based on the remaining length of the variation. For instance,
+           if a variation has 2 notes remaining and neither 4a nor 4b is
+           satisfied, there is a 50% chance the central note will be
+           selected. If the central note is not selected this time around,
+           the chance it is selected in the next iteration becomes 100%.
+       4d. Select whether the next note will ascend or descend. If the
+           intent has an ascending contour, it is more likely to choose
+           a note above the selection if there is room to do so. The
+           inverse is true of a descending contour.
+       4e. Check whether this intent's interval is already present.
+           If so, ignore 4f.
+       4f. Check whether the desired interval is possible to reach
+           in the given direction. If so, select whether to choose
+           this interval or another to insert. This choice is similarly
+           proportioned to the selection of the central note--see above
+           for details.
+       4g. Insert the note provided by a movement of this interval.
+    '''
 
     def start(self,availableNotes):
         """
@@ -101,7 +103,19 @@ class Variation:
         :param availableNotes: List of notes this variation can select from.
         :return: A list containing the first note of this variation.
         """
-        pass
+        toReturn = []
+        contour = self.intent.getContour()
+        if (contour == v.DESCENDING):
+            upperHalf = availableNotes[len(availableNotes)/2:]
+            randNote = random.choice(upperHalf)
+            toReturn.append(randNote)
+        elif (contour == v.ASCENDING):
+            lowerHalf = availableNotes[:len(availableNotes) / 2]
+            randNote = random.choice(lowerHalf)
+            toReturn.append(randNote)
+        else:
+            toReturn.append(random.choice(availableNotes))
+        return toReturn
 
 
     def findAvailableNotes(self):
