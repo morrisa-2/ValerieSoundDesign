@@ -46,6 +46,7 @@ SLOW = 0.75e3 # 80 BPM
 MODERATE = 0.6e3 # 100 BPM
 FAST = 0.5e3 # 120 BPM
 
+# TODO: Make a Note class?
 # NOTES - No enharmonic spellings, sharps prioritized
 NOTES = ["A0","A#0","B0","C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1",
          "A1","A#1","B1","C2","C#2","D2","D#2","E2","F2","F#2","G2","G#2",
@@ -60,7 +61,7 @@ NOTES = ["A0","A#0","B0","C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1",
 
 
 # DEFAULTS
-DEFAULT_CENTER = NOTES.index("C4")
+DEFAULT_CENTER = "C4"
 DEFAULT_RANGE = 7
 DEFAULT_MODE = IONIAN
 DEFAULT_CONTOUR = BOTH

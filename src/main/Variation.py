@@ -8,9 +8,8 @@ Invariant:
     but not the VariationGen that produced it.
 """
 import random
-
-import src.main.Intents.Intent
 import src.main.ValConstants as v
+import src.main.ValUtil as vu
 
 class Variation:
     def __init__(self,intent):
@@ -24,10 +23,10 @@ class Variation:
         self.contents = self.populate()
 
     def inRange(self,pitch):
-        centralNote = self.intent.getCentralNote()
+        centralIndex = v.NOTES.index(self.intent.getCentralNote())
         pitchRange = self.intent.getPitchRange()
-        rangeMin = centralNote - pitchRange
-        rangeMax = centralNote + pitchRange
+        rangeMin = centralIndex - pitchRange
+        rangeMax = centralIndex + pitchRange
         if(pitch in v.NOTES):
             pitchIndex = v.NOTES.index(pitch)
             return pitchIndex <= rangeMax and pitchIndex >= rangeMin
@@ -47,6 +46,9 @@ class Variation:
     def populate(self):
         availableNotes = self.findAvailableNotes()
         toPlay = self.start(availableNotes)
+        length = self.intent.getLength()
+        for i in range(length - 1):
+            toPlay = self.conditionalSelection(availableNotes,toPlay)
         '''
              5.     Repeat step 4 until the variation is of the desired length.
              6.     Add the length of each note to the variation.
@@ -63,37 +65,166 @@ class Variation:
         '''
         pass
 
-    def selectNote(self,availableNotes,toAdd):
-        pass
+    def intervals(self,checkIntOf):
+        """
+        Given a list of at least two notes, returns
+        a list containing the difference in semitones
+        between those notes in order. If checkIntOf
+        has one note, returns an empty list. If checkIntOf
+        is empty, raises an exception.
+        Ex. checkIntOf = ["C4","G4","D4"];
+        returns [7,-5]
+        :param checkIntOf: A list of notes to check the
+        intervals between.
+        :return: A list of the intervals between note in
+        checkIntOf; an empty list if checkIntOf has one note.
+        """
+        toReturn = []
+        i = 0
+        if(len(checkIntOf) < 1):
+            raise Exception("checkIntOf must contain at least one note.")
+        else:
+            for note in checkIntOf[:-1]:
+                next = checkIntOf[i+1]
+                toReturn.append(vu.interval(note,next))
+            return toReturn
 
-    '''   
-    4. Select next note.
-       4a. Check whether the central note has been selected
-           already. If so, ignore 4b and 4c.
-       4b. Check distance between this note and the central
-           note in the list of this variation's full range.
-           If that distance is the interval of this intent,
-           select the central note immediately.
-       4c. Randomly select whether to play the central note
-           or another note in the available range. Proportions
-           are based on the remaining length of the variation. For instance,
-           if a variation has 2 notes remaining and neither 4a nor 4b is
-           satisfied, there is a 50% chance the central note will be
-           selected. If the central note is not selected this time around,
-           the chance it is selected in the next iteration becomes 100%.
-       4d. Select whether the next note will ascend or descend. If the
-           intent has an ascending contour, it is more likely to choose
-           a note above the selection if there is room to do so. The
-           inverse is true of a descending contour.
-       4e. Check whether this intent's interval is already present.
-           If so, ignore 4f.
-       4f. Check whether the desired interval is possible to reach
-           in the given direction. If so, select whether to choose
-           this interval or another to insert. This choice is similarly
-           proportioned to the selection of the central note--see above
-           for details.
-       4g. Insert the note provided by a movement of this interval.
-    '''
+    # Passing toAdd into and out of these selection functions
+    # feels weird, though I can't place why.
+    # TODO: Consider alternatives to toAdd
+    def selectOnContour(self,availableNotes,toAdd):
+        """
+        Select the next note in this sequence based on
+        the contour of this intent.
+        :param availableNotes: Notes to select from.
+        :param toAdd: List to add the next note to.
+        :return: toAdd with an additional note appended.
+        """
+        contour = self.intent.getContour()
+        turnAroundRange = 3
+        current = toAdd[-1]
+        topOut = current not in availableNotes[-turnAroundRange:]
+        bottomOut = current not in availableNotes[:turnAroundRange]
+        currentIndex = availableNotes.index(current)
+        if(contour == v.ASCENDING and not topOut):
+            higherThanCurrent = random.choice(availableNotes[currentIndex:])
+            toAdd.append(higherThanCurrent)
+        elif(contour == v.DESCENDING and not bottomOut):
+            lowerThanCurrent = random.choice(availableNotes[:currentIndex])
+            toAdd.append(lowerThanCurrent)
+        else:
+            anyButCurrent = random.choice(availableNotes)
+            while(anyButCurrent == current):
+                anyButCurrent = random.choice(availableNotes)
+            toAdd.append(anyButCurrent)
+        return toAdd
+
+    def selectOnInterval(self,availableNotes,fullRange,addTo):
+        """
+        Select the next note in this sequence based on
+        the interval of this intent. Selects direction of
+        interval based on whether there is room in the range
+        of available notes, not contour. If there is no room
+        on either side, raises an index exception. If neither
+        note is in key, returns addTo as it was passed in originally.
+        :param availableNotes: Notes to select from.
+        :param fullRange: Full range of notes surrounding
+        the central note, including those outside the desired key.
+        :param addTo: List to add the next note to.
+        :return: addTo with an additional note appended.
+        """
+        current = addTo[-1]
+        interval = self.intent.getInterval()
+        currentIndex = fullRange.index(current)
+        roomToGoDown = currentIndex - interval >= 0
+        roomToGoUp = currentIndex + interval < len(fullRange)
+        if (not roomToGoUp and not roomToGoDown):
+            raise IndexError("Desired interval exceeds range.")
+        else:
+            if (roomToGoDown):
+                downInKey = fullRange[currentIndex - interval] in availableNotes
+                canGoDown = roomToGoDown and downInKey
+            else:
+                downInKey = False
+                canGoDown = False
+
+            if (roomToGoUp):
+                upInKey = fullRange[currentIndex + interval] in availableNotes
+                canGoUp = roomToGoUp and upInKey
+            else:
+                upInKey = False
+                canGoUp = False
+
+            if(not upInKey and not downInKey):
+                return addTo
+            else:
+                if(not canGoUp and canGoDown):
+                    noteToAdd = fullRange[currentIndex - interval]
+                elif(canGoUp and not canGoDown):
+                    noteToAdd = fullRange[currentIndex + interval]
+                else:
+                    coinFlip = random.randrange(2)
+                    if (coinFlip == 0):
+                        noteToAdd = fullRange[currentIndex - interval]
+                    else:
+                        noteToAdd = fullRange[currentIndex + interval]
+
+                addTo.append(noteToAdd)
+                return addTo
+
+    def conditionalSelection(self,availableNotes,addTo):
+        """
+        Selection method based on the notes remaining in
+        this variation. If the central note has not yet
+        been selected for this variation, the chance it
+        is selected next is 1/x where x is the remaining
+        number of notes in the pattern. The same is true of
+        the intent's interval. If neither has been selected by
+        the final note and the central note cannot be reached by
+        that interval, one supersedes the other at random.
+        If both conditions are met, selects a new note based on
+        contour. Raises an exception if attempting to add beyond
+        the length of the intent.
+
+        :param availableNotes: Notes to select from.
+        :param addTo: List to add notes to.
+        :return: addTo with the selected note added.
+        """
+        intervals = self.intervals(addTo)
+        intervalMissing = self.intent.getInterval() not in intervals
+        centralMissing = self.intent.getCentralNote() not in addTo
+        notesRemaining = self.intent.getLength() - len(addTo)
+        if (notesRemaining <= 0):
+            raise Exception("Cannot add notes beyond the length of this intent.")
+        else:
+            if (notesRemaining == 1 and centralMissing and intervalMissing):
+                return self.chooseToSupersede(availableNotes,addTo)
+            else:
+                randomByLength = random.randrange(notesRemaining)
+                if (randomByLength == 0 and intervalMissing):
+                    return self.selectOnInterval(availableNotes,self.findFullRange(),addTo)
+                elif (randomByLength == 0 and centralMissing):
+                    addTo.append(self.intent.getCentralNote())
+                    return addTo
+                else:
+                    return self.selectOnContour(availableNotes,addTo)
+
+    def chooseToSupersede(self,availableNotes,addTo):
+        """
+        Helper function for conditional selection. Randomly
+        chooses between selecting by interval or selecting
+        the central note.
+        :param availableNotes: List of available notes.
+        :param addTo: List of notes to add selection to.
+        :return: addTo with the selected note appended.
+        """
+        coinFlip = random.randrange(2)
+        if (coinFlip == 0):
+            return self.selectOnInterval(availableNotes, self.findFullRange(), addTo)
+        else:
+            central = self.intent.getCentralNote()
+            addTo.append(central)
+            return addTo
 
     def start(self,availableNotes):
         """
@@ -161,9 +292,9 @@ class Variation:
         return availableNotes
 
     def findFullRange(self):
-        centralNote = self.intent.getCentralNote()
+        centralIndex = v.NOTES.index(self.intent.getCentralNote())
         pitchRange = self.intent.getPitchRange()
-        if (centralNote - pitchRange > 0 & centralNote + pitchRange < len(v.NOTES)):
+        if (centralIndex - pitchRange > 0 & centralIndex + pitchRange < len(v.NOTES)):
             fullRange = [pitch for pitch in v.NOTES if self.inRange(pitch)]
             return fullRange
         else:
