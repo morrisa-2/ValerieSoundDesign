@@ -50,7 +50,6 @@ class Variation:
         for i in range(length - 1):
             toPlay = self.conditionalSelection(availableNotes,toPlay)
         '''
-             5.     Repeat step 4 until the variation is of the desired length.
              6.     Add the length of each note to the variation.
                        6a. These are denoted by the rhythmic descriptors in
                            ValConstants--short, mid, and long. Each corresponds to a
@@ -64,6 +63,18 @@ class Variation:
                            such: "C5=0.5 G4=2 A4=1".
         '''
         pass
+
+    # This is a provisional solution and is going to sound clunky.
+    # TODO: Make rhythms more dynamic--weighting system?
+    def applyDurations(self,applyTo):
+        """
+        Given a list of notes, applies this intent's rhythm--or
+        note duration--to the list. If the length of the intent
+        exceeds the size of the rhythm, wraps around
+        :param applyTo: List of notes to apply rhythms to.
+        :return: applyTo with each note modified to reflect
+        its duration.
+        """
 
     def intervals(self,checkIntOf):
         """
