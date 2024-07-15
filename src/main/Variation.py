@@ -12,6 +12,7 @@ import src.main.ValConstants as v
 import src.main.ValUtil as vu
 
 class Variation:
+
     def __init__(self,intent):
         """
         Non-default constructor.
@@ -33,15 +34,14 @@ class Variation:
         else:
             raise ValueError('Unrecognized note name.')
 
-    # Uncomment when populate is functional.
-    # def __str__(self):
-    #     """
-    #     Returns a string representation of this
-    #     variation.
-    #     :return: A string representing this variation.
-    #     Ex. "C5=0.5 G4=2 A3=1 (Intent)"
-    #     """
-    #     return str(self.contents + " ("+self.intent+")")
+    def __str__(self):
+        """
+        Returns a string representation of this
+        variation.
+        :return: A string representing this variation.
+        Ex. "C5=0.5 G4=2 A3=1 (Intent)"
+        """
+        return str(self.contents + " ("+self.intent+")")
 
     def populate(self):
         availableNotes = self.findAvailableNotes()
@@ -50,20 +50,7 @@ class Variation:
         for i in range(length - 1):
             toPlay = self.conditionalSelection(availableNotes,toPlay)
         self.applyDurations(toPlay)
-        '''
-             6.     Add the length of each note to the variation.
-                       6a. These are denoted by the rhythmic descriptors in
-                           ValConstants--short, mid, and long. Each corresponds to a
-                           number (0.5, 1, and 2) which signifies to gensound whether
-                           to play an eighth, quarter, or half note.
-                       6b. For instance, if the notes in this variation are ["C5","G4","A4"] and
-                           the rhythmic pattern is [short,long,mid], the result of this step is
-                           the list ["C5=0.5","G4=2","A4=1"].
-             7.     Combine the list of notes into a single string and return it.
-                       7a. Keeping with the example above, the string should be formatted as
-                           such: "C5=0.5 G4=2 A4=1".
-        '''
-        pass
+        return " ".join(toPlay)
 
     # This is a provisional solution and is going to sound clunky.
     # TODO: Make rhythms more dynamic--weighting system?

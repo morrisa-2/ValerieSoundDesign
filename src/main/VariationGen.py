@@ -6,7 +6,7 @@ Invariant:
  -  The desired Intent is passed in upon construction, and can be set afterward.
  -  Any number of variations can be produced for each intent through the generate() function.
 """
-
+import src.main.Variation as Variation
 
 class VariationGen:
     def __init__(self,intent):
@@ -14,7 +14,8 @@ class VariationGen:
         self.intent = intent
 
     def generate(self):
-        pass
+        var = Variation.Variation(self.intent)
+
 
     def __str__(self):
         """
