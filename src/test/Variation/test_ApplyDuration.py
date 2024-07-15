@@ -28,6 +28,7 @@ class ApplyDurationTestCase(unittest.TestCase):
         expected = []
         for note in self.toPlay:
             expected.append(note + "=" + rhythm[i])
+            i += 1
         actual = self.v.applyDurations(self.toPlay)
         self.assertEqual(expected,actual)
 
@@ -58,7 +59,7 @@ class ApplyDurationTestCase(unittest.TestCase):
         rhythm = self.i.getRhythm()
         expected = []
         for note in self.toPlay:
-            if (i == len(rhythm)):
+            if (i >= len(rhythm)):
                 i = 0
             expected.append(note + "=" + rhythm[i])
             i += 1

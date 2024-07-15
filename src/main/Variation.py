@@ -49,6 +49,7 @@ class Variation:
         length = self.intent.getLength()
         for i in range(length - 1):
             toPlay = self.conditionalSelection(availableNotes,toPlay)
+        self.applyDurations(toPlay)
         '''
              6.     Add the length of each note to the variation.
                        6a. These are denoted by the rhythmic descriptors in
@@ -75,6 +76,16 @@ class Variation:
         :return: applyTo with each note modified to reflect
         its duration.
         """
+        rhythm = self.intent.getRhythm()
+        length = self.intent.getLength()
+        i = 0
+        toReturn = []
+        for note in applyTo:
+            if (i >= len(rhythm)):
+                i = 0
+            toReturn.append(note + "=" + rhythm[i])
+            i+=1
+        return toReturn
 
     def intervals(self,checkIntOf):
         """
