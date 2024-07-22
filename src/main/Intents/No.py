@@ -2,16 +2,17 @@
 Model of the speech intent 'no'.
 '''
 import src.main.ValConstants as v
-import Intent
+from src.main.Intents.Intent import Intent
 
 class No(Intent):
     def __init__(self):
-        self.setCentralNote([v.NOTES.index("G3"),v.NOTES.index("F#3")])
-        self.setPitchRange(7)
-        self.setMode(v.AEOLIAN)
-        self.setContour(v.DESCENDING)
-        self.setTempo(v.FAST)
-        self.setRhythm([v.SHORT,v.SHORT,v.LONG])
-        self.setLength(3)
-        self.setKey("C")
-        self.setInterval(v.MIN2ND)
+        super().__init__()
+        self.centralNote = "F#3"
+        self.pitchRange = 7
+        self.mode = v.AEOLIAN
+        self.contour = v.DESCENDING
+        self.tempo = v.FAST
+        self.rhythm =  [v.SHORT,v.SHORT,v.LONG]
+        self.length = 3
+        self.key = "C"
+        self.interval = v.MIN2ND

@@ -2,16 +2,17 @@
 Model of the speech intent 'unsure'.
 '''
 import src.main.ValConstants as v
-import Intent
+from src.main.Intents.Intent import Intent
 
 class Unsure(Intent):
     def __init__(self):
-        self.setCentralNote([v.NOTES.index("G#3"),v.NOTES.index("F3")])
-        self.setPitchRange(9)
-        self.setMode(v.AEOLIAN)
-        self.setContour(v.BOTH)
-        self.setTempo(v.MODERATE)
-        self.setRhythm([v.LONG,v.SHORT, v.LONG])
-        self.setLength(3)
-        self.setKey("F")
-        self.setInterval(v.MIN3RD)
+        super().__init__()
+        self.centralNote = "F3"
+        self.pitchRange = 9
+        self.mode = v.AEOLIAN
+        self.contour = v.BOTH
+        self.tempo = v.MODERATE
+        self.rhythm = [v.LONG,v.SHORT, v.LONG]
+        self.length = 3
+        self.key = "F"
+        self.interval = v.MIN3RD

@@ -2,17 +2,36 @@
 Model of the speech intent 'alert'.
 '''
 import src.main.ValConstants as v
-import Intent
-
+from src.main.Intents.Intent import Intent
 
 class Alert(Intent):
     def __init__(self):
-        self.setCentralNote(v.NOTES.index("F#7"))
-        self.setPitchRange(11)
-        self.setMode(v.LYDIAN)
-        self.setContour(v.DESCENDING)
-        self.setTempo(v.MODERATE)
-        self.setRhythm([v.LONG, v.LONG])
-        self.setLength(2)
-        self.setKey("C")
-        self.setInterval(v.TRI)
+        super().__init__()
+        self.centralNote = "F#7"
+        self.pitchRange = 11
+        self.mode = v.LYDIAN
+        self.contour = v.DESCENDING
+        self.tempo = v.MODERATE
+        self.rhythm = [v.LONG, v.LONG]
+        self.length = 2
+        self.key = "C"
+        self.interval = v.TRI
+
+    def getCentralNote(self):
+        return super().getCentralNote()
+    def getPitchRange(self):
+        return super().getPitchRange()
+    def getMode(self):
+        return super().getMode()
+    def getContour(self):
+        return super().getContour()
+    def getTempo(self):
+        return super().getTempo()
+    def getRhythm(self):
+        return super().getRhythm()
+    def getLength(self):
+        return super().getLength()
+    def getKey(self):
+        return super().getKey()
+    def getInterval(self):
+        return super().getInterval()

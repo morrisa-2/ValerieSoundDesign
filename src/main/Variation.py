@@ -21,7 +21,15 @@ class Variation:
         """
         # TODO: Check whether given intent is valid
         self.intent = intent
-        self.contents = self.populate()
+        self.notes = self.populate()
+
+    def prepForSignal(self):
+        """
+        :return: A tuple of two elements--the notes of this
+        variation and its tempo.
+        """
+        tempo = self.intent.getTempo()
+        return (self.notes,tempo)
 
     def inRange(self,pitch):
         centralIndex = v.NOTES.index(self.intent.getCentralNote())
@@ -41,7 +49,7 @@ class Variation:
         :return: A string representing this variation.
         Ex. "C5=0.5 G4=2 A3=1 (Intent)"
         """
-        return str(self.contents + " ("+self.intent+")")
+        return str(self.notes + " ("+str(self.intent)+")")
 
     def populate(self):
         availableNotes = self.findAvailableNotes()
