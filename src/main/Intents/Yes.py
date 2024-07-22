@@ -7,7 +7,7 @@ from src.main.Intents.Intent import Intent
 class Yes(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "G3"
+        self.centralNote = "G5"
         self.pitchRange = 5
         self.mode = v.IONIAN
         self.contour = v.ASCENDING

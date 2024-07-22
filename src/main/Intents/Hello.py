@@ -8,7 +8,7 @@ class Hello(Intent):
     print(__file__)
     def __init__(self):
         super().__init__()
-        self.centralNote = "D4"
+        self.centralNote = "D5"
         self.pitchRange = 9
         self.mode = v.IONIAN
         self.contour = v.BOTH

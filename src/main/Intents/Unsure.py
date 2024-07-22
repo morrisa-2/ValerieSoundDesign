@@ -7,7 +7,7 @@ from src.main.Intents.Intent import Intent
 class Unsure(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "F3"
+        self.centralNote = "F5"
         self.pitchRange = 9
         self.mode = v.AEOLIAN
         self.contour = v.BOTH

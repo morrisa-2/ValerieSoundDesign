@@ -7,7 +7,7 @@ from src.main.Intents.Intent import Intent
 class No(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "F#3"
+        self.centralNote = "F#5"
         self.pitchRange = 7
         self.mode = v.AEOLIAN
         self.contour = v.DESCENDING

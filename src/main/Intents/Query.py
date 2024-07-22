@@ -7,7 +7,7 @@ from src.main.Intents.Intent import Intent
 class Query(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "C#4"
+        self.centralNote = "C#5"
         self.pitchRange = 9
         self.mode = v.AEOLIAN
         self.contour = v.ASCENDING

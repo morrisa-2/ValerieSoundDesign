@@ -7,7 +7,7 @@ from src.main.Intents.Intent import Intent
 class Goodbye(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "F#3"
+        self.centralNote = "F#5"
         self.pitchRange = 8
         self.mode = v.IONIAN
         self.contour = v.DESCENDING

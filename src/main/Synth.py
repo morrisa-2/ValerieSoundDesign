@@ -3,7 +3,7 @@ A simple synth patch for the gensound module.
 """
 
 from gensound import Sine
-from gensound import Triangle
+from gensound import Gain
 from gensound import ADSR
 from pathlib import Path
 
@@ -38,11 +38,13 @@ class Synth:
             raise TypeError("Please enter a path to a directory.")
         else:
             unpackedVariation = variation.prepForSignal()
-            sig1 = 0.5 * Sine(unpackedVariation[0],duration=unpackedVariation[1])
+            sig1 = Sine(unpackedVariation[0],duration=unpackedVariation[1]) * Gain(-4)
             downAnOctave = self._dropOctave(variation)
-            sig2 = 0.5 * Triangle(downAnOctave,duration=unpackedVariation[1])
+            sig2 = Sine(downAnOctave,duration=unpackedVariation[1]) * Gain(-4)
             sig = sig1 + sig2
-            sig = sig * ADSR(attack=0.002e3, decay=0.03e3, sustain=0.8, release=0.2e3)
+            #TODO: Fix ADSR transform
+            #ADSR makes the amplitude freak out sometimes--fix and then uncomment.
+            #sig = sig * ADSR(attack=0.05e3, decay=0.02e3, sustain=0.7e3, release=0.05e3)
             fileName = str(variation) + str(order) + ".wav"
             path = str(filePath) + '/' + fileName
             sig.export(path)

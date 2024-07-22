@@ -7,7 +7,7 @@ from src.main.Intents.Intent import Intent
 class ThankYou(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "A#3"
+        self.centralNote = "A#5"
         self.pitchRange = 9
         self.mode = v.IONIAN
         self.contour = v.DESCENDING
