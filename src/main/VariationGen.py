@@ -26,7 +26,7 @@ class VariationGen:
         """
         var = Variation.Variation(self.intent)
         synth = Synth.Synth()
-        synth.generateSignal(var,ordinal,filepath)
+        synth.exportVariation(var, ordinal, filepath)
 
     def generate(self,numberToGen,filepath):
         """

@@ -2,9 +2,8 @@
 A simple synth patch for the gensound module.
 """
 
-from gensound import Sine
-from gensound import Gain
-from gensound import ADSR
+from gensound import Sine, Gain, ADSR, FadeIn, FadeOut
+from gensound.filters import SimpleBandPass
 from pathlib import Path
 
 class Synth:
@@ -20,7 +19,29 @@ class Synth:
         notes = variation.prepForSignal()[0]
         return "@transpose:-12.0 " + notes
 
-    def generateSignal(self,variation,order,filePath):
+    def _generateSignal(self,variation):
+        """
+        Returns a gensound Signal object that corresponds
+        to the given Variation.
+        :param variation: Variation to generate a signal for.
+        :return: Signal that is represented by the given variation.
+        """
+        # Returns a tuple consisting of the variation's notes and tempo.
+        unpackedVariation = variation.prepForSignal()
+
+        # Transforms are kind of busted for right now...
+        # TODO: Fix ADSR amplitude glitch.
+        # envelope = ADSR(attack=0.05e3, decay=0.02e3, sustain=0.7e3, release=0.1e3)
+        gain = Gain(-4)
+        # TODO: Fix fades glitch (??)
+        # fades = FadeOut(duration=0.1e3) * FadeIn(duration=0.1e3)
+        # bandpass = SimpleBandPass(lower=100, upper=10000)
+
+        sig = Sine(unpackedVariation[0], duration=unpackedVariation[1])
+        sig = sig * gain
+        return sig
+
+    def exportVariation(self, variation, order, filePath):
         """
         Exports the given variation as a wav file.
         :param variation: Variation to play.
@@ -37,14 +58,7 @@ class Synth:
         if not filePath.is_dir():
             raise TypeError("Please enter a path to a directory.")
         else:
-            unpackedVariation = variation.prepForSignal()
-            sig1 = Sine(unpackedVariation[0],duration=unpackedVariation[1]) * Gain(-4)
-            downAnOctave = self._dropOctave(variation)
-            sig2 = Sine(downAnOctave,duration=unpackedVariation[1]) * Gain(-4)
-            sig = sig1 + sig2
-            #TODO: Fix ADSR transform
-            #ADSR makes the amplitude freak out sometimes--fix and then uncomment.
-            #sig = sig * ADSR(attack=0.05e3, decay=0.02e3, sustain=0.7e3, release=0.05e3)
+            sig = self._generateSignal(variation)
             fileName = str(variation) + str(order) + ".wav"
             path = str(filePath) + '/' + fileName
             sig.export(path)

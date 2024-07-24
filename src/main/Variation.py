@@ -23,15 +23,25 @@ class Variation:
         self.intent = intent
         self.notes = self.populate()
 
+    def _addRest(self):
+        """
+        Adds a short rest to the end of the given
+        variation to avoid clicking.
+        :return: A string of the variation's notes with
+        an added rest.
+        """
+        return self.notes + " r=0.5"
+
     def prepForSignal(self):
         """
         :return: A tuple of two elements--the notes of this
         variation and its tempo.
         """
         tempo = self.intent.getTempo()
-        return (self.notes,tempo)
+        withRest = self._addRest()
+        return (withRest,tempo)
 
-    def inRange(self,pitch):
+    def _inRange(self,pitch):
         centralIndex = v.NOTES.index(self.intent.getCentralNote())
         pitchRange = self.intent.getPitchRange()
         rangeMin = centralIndex - pitchRange
@@ -57,7 +67,7 @@ class Variation:
         length = self.intent.getLength()
         for i in range(length - 1):
             toPlay = self.conditionalSelection(availableNotes,toPlay)
-        self.applyDurations(toPlay)
+        toPlay = self.applyDurations(toPlay)
         return " ".join(toPlay)
 
     # This is a provisional solution and is going to sound clunky.
@@ -72,13 +82,12 @@ class Variation:
         its duration.
         """
         rhythm = self.intent.getRhythm()
-        length = self.intent.getLength()
         i = 0
         toReturn = []
         for note in applyTo:
             if (i >= len(rhythm)):
                 i = 0
-            toReturn.append(note + "=" + rhythm[i])
+            toReturn.append(note + "=" + str(rhythm[i]))
             i+=1
         return toReturn
 
@@ -312,7 +321,7 @@ class Variation:
         centralIndex = v.NOTES.index(self.intent.getCentralNote())
         pitchRange = self.intent.getPitchRange()
         if (centralIndex - pitchRange > 0 & centralIndex + pitchRange < len(v.NOTES)):
-            fullRange = [pitch for pitch in v.NOTES if self.inRange(pitch)]
+            fullRange = [pitch for pitch in v.NOTES if self._inRange(pitch)]
             return fullRange
         else:
             raise ValueError('Given range exceeds available pitches.')

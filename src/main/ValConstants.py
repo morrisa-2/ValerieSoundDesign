@@ -31,9 +31,9 @@ MAJ7TH = 11
 OCT = 12
 
 # RHYTHMIC DESCRIPTORS
-SHORT = "SHORT"
-MID = "MID"
-LONG = "LONG"
+SHORT = 0.5
+MID = 1
+LONG = 2
 
 # DIRECTIONAL DESCRIPTORS
 ASCENDING = "ASCENDING"
@@ -41,10 +41,10 @@ DESCENDING = "DESCENDING"
 BOTH = "BOTH"
 CONSTANT = "CONSTANT"
 
-# TEMPO
-SLOW = 0.75e3 # 80 BPM
-MODERATE = 0.6e3 # 100 BPM
-FAST = 0.5e3 # 120 BPM
+# TEMPO - Measured in miliseconds per quarter note.
+SLOW = 5000
+MODERATE = 3000
+FAST = 1000
 
 # TODO: Make a Note class?
 # NOTES - No enharmonic spellings, sharps prioritized
