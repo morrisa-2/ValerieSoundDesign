@@ -7,7 +7,7 @@ Invariant:
  -  Any number of variations can be produced for each intent through the generate() function.
 """
 import src.main.Variation as Variation
-import Synth
+import SCConnection
 
 class VariationGen:
     def __init__(self,intent):
@@ -25,8 +25,8 @@ class VariationGen:
         which to store the generated wav file.
         """
         var = Variation.Variation(self.intent)
-        synth = Synth.Synth()
-        synth.exportVariation(var, ordinal, filepath)
+        connection = SCConnection.SCConnection()
+        connection.exportVariation(var, ordinal, filepath)
 
     def generate(self,numberToGen,filepath):
         """
