@@ -10,6 +10,7 @@ Invariant:
 import random
 import src.main.ValConstants as v
 import src.main.ValUtil as vu
+import copy
 
 class Variation:
 
@@ -21,25 +22,7 @@ class Variation:
         """
         # TODO: Check whether given intent is valid
         self.intent = intent
-        self.notes = self.populate()
-
-    def _addRest(self):
-        """
-        Adds a short rest to the end of the given
-        variation to avoid clicking.
-        :return: A string of the variation's notes with
-        an added rest.
-        """
-        return self.notes + " r=0.5"
-
-    def prepForSignal(self):
-        """
-        :return: A tuple of two elements--the notes of this
-        variation and its tempo.
-        """
-        tempo = self.intent.getTempo()
-        withRest = self._addRest()
-        return (withRest,tempo)
+        self.contents = self.populate()
 
     def _inRange(self,pitch):
         centralIndex = v.NOTES.index(self.intent.getCentralNote())
@@ -59,37 +42,61 @@ class Variation:
         :return: A string representing this variation.
         Ex. "C5=0.5 G4=2 A3=1 (Intent)"
         """
-        return str(self.notes + " ("+str(self.intent)+")")
+        # TODO: Make this prettier
+        return ("Notes: " + str(self.contents[0]) + "\n" +
+                "Rhythm: " + str(self.contents[1]) + "\n" +
+                "Intent: " + str(self.intent))
 
     def populate(self):
+        """
+        Populates this variation with notes and their
+        rhythms.
+        :return: A 2D array consisting of two arrays--
+        one of note names and another of their rhythmic value.
+        Ex. [["C5","D#5","A5"],[v.EIGHTH,v.QUARTER,v.EIGHTH]]
+        """
         availableNotes = self.findAvailableNotes()
-        toPlay = self.start(availableNotes)
+        notes = self.start(availableNotes)
         length = self.intent.getLength()
         for i in range(length - 1):
-            toPlay = self.conditionalSelection(availableNotes,toPlay)
-        toPlay = self.applyDurations(toPlay)
-        return " ".join(toPlay)
+            notes = self.conditionalSelection(availableNotes,notes)
+        rhythm = self.applyDurations()
+        toPlay = [notes,rhythm]
+        return toPlay
+
+    def getMIDINotes(self):
+        toReturn = []
+        for note in self.contents:
+            toReturn.append(v.NOTES.index(note))
+        return toReturn
+
+    def getRhythm(self):
+        return copy.deepcopy(self.contents[1])
 
     # This is a provisional solution and is going to sound clunky.
     # TODO: Make rhythms more dynamic--weighting system?
-    def applyDurations(self,applyTo):
-        """
-        Given a list of notes, applies this intent's rhythm--or
-        note duration--to the list. If the length of the intent
-        exceeds the size of the rhythm, wraps around
-        :param applyTo: List of notes to apply rhythms to.
-        :return: applyTo with each note modified to reflect
-        its duration.
-        """
-        rhythm = self.intent.getRhythm()
-        i = 0
-        toReturn = []
-        for note in applyTo:
-            if (i >= len(rhythm)):
-                i = 0
-            toReturn.append(note + "=" + str(rhythm[i]))
-            i+=1
-        return toReturn
+    def applyDurations(self):
+        return self.intent.getRhythm()
+
+        # """
+        # Given a list of notes, applies this intent's rhythm--or
+        # note duration--to the list. If the length of the intent
+        # exceeds the size of the rhythm, wraps around
+        # :param applyTo: List of notes to apply rhythms to.
+        # :return: applyTo with each note modified to reflect
+        # its duration.
+        # """
+        # rhythm = self.intent.getRhythm()
+        # i = 0
+        # toReturn = []
+        # for note in applyTo:
+        #     if (i >= len(rhythm)):
+        #         i = 0
+        #     toReturn.append(note + "=" + str(rhythm[i]))
+        #     i+=1
+        # return toReturn
+
+
 
     def intervals(self,checkIntOf):
         """
@@ -224,7 +231,7 @@ class Variation:
             raise Exception("Cannot add notes beyond the length of this intent.")
         else:
             if (notesRemaining == 1 and centralMissing and intervalMissing):
-                return self.chooseToSupersede(availableNotes,addTo)
+                return self._chooseToSupersede(availableNotes, addTo)
             else:
                 randomByLength = random.randrange(notesRemaining)
                 if (randomByLength == 0 and intervalMissing):
@@ -235,7 +242,7 @@ class Variation:
                 else:
                     return self.selectOnContour(availableNotes,addTo)
 
-    def chooseToSupersede(self,availableNotes,addTo):
+    def _chooseToSupersede(self, availableNotes, addTo):
         """
         Helper function for conditional selection. Randomly
         chooses between selecting by interval or selecting
