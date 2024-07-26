@@ -4,6 +4,7 @@ the SCAMP and pythonosc modules.
 """
 
 from scamp import *
+import expenvelope.envelope
 from pythonosc.udp_client import SimpleUDPClient
 
 class SCConnection:
@@ -25,7 +26,9 @@ class SCConnection:
         # TODO: Reformat variation contents
         # This will be an array of indices which match up w/MIDI note numbers.
         pitches = variation.getMIDINotes()
-        env = Envelope()
+        env = expenvelope.Envelope
+        env = env.adsr(attack_length=0.1,attack_level=1,decay_length=0,
+                       sustain_level=1,release_length=0.1)
         # This will be an array of note lengths.
         rhythm = variation.getRhythm()
         i = 0
@@ -43,9 +46,9 @@ class SCConnection:
         Exports the given variation as a wav file.
         :param variation: Variation to play.
         """
-        self.client.send_message("/recording/start")
+        self.client.send_message("/recording/start",1)
         self._generateSignal(variation)
-        self.client.send_message("/recording/end")
+        self.client.send_message("/recording/end",1)
 
         # pathIsString = isinstance(filePath,str)
         # if pathIsString:
