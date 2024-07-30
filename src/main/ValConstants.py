@@ -42,6 +42,8 @@ BOTH = "BOTH"
 CONSTANT = "CONSTANT"
 
 # TEMPO - Measured in seconds per quarter note.
+# Does this make any sense? Why am I doing it this way????
+# TODO: Check how to format tempo.
 SLOW = 1
 MODERATE = 0.5
 FAST = 0.25

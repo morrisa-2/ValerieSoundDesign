@@ -47,6 +47,22 @@ class Variation:
                 "Rhythm: " + str(self.contents[1]) + "\n" +
                 "Intent: " + str(self.intent))
 
+    def lengthInSeconds(self):
+        """
+        Gets the length of this variation in seconds.
+        :return: The length of this variation in seconds as an integer.
+        """
+        rhythm = self.contents[1]
+        totalBeats = sum(rhythm)
+        return totalBeats * self.intent.getTempo()
+
+    def nameOfIntent(self):
+        """
+        Gets the name of this variation's intent.
+        :return: This variation's intent as a string.
+        """
+        return str(self.intent)
+
     def populate(self):
         """
         Populates this variation with notes and their

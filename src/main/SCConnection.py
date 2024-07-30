@@ -4,6 +4,7 @@ the SCAMP and pythonosc modules.
 """
 
 from scamp import *
+from pathlib import Path
 import expenvelope.envelope
 import rtmidi
 from pythonosc.udp_client import SimpleUDPClient
@@ -42,24 +43,30 @@ class SCConnection:
                 self.synth.play_note(note, env, rhythm[i])
             i += 1
 
-    def exportVariation(self, variation):
+    def exportVariation(self, variation, ordinal, filepath):
         """
         Exports the given variation as a wav file.
         :param variation: Variation to play.
+        :param ordinal: Number to be appended to the end of the
+        exported file's name to avoid accidental overwriting.
+        :param filepath: Path object or string representing the directory in which
+        this variation is to be exported.
         """
-        self.client.send_message("/recording/start",1.0)
-        self._generateSignal(variation)
-        self.client.send_message("/recording/end",1.0)
+        if (isinstance(filepath,str)):
+            filepath = Path(filepath)
 
-        # pathIsString = isinstance(filePath,str)
-        # if pathIsString:
-        #     filePath = Path(filePath)
-        # if not filePath.exists():
-        #     raise NameError("Please enter an existing path.")
-        # if not filePath.is_dir():
-        #     raise TypeError("Please enter a path to a directory.")
-        # else:
-        #     sig = self._generateSignal(variation)
-        #     fileName = str(variation) + str(order) + ".wav"
-        #     path = str(filePath) + '/' + fileName
-        #     sig.export(path)
+        if (not filepath.exists()):
+            print("Creating directory at the given filepath...")
+            filepath.mkdir()
+        elif (not filepath.is_dir()):
+            raise TypeError("Please input a path to a directory.")
+
+        fileName = variation.nameOfIntent() + str(ordinal) + ".wav"
+        filepath = str(filepath)
+        file = filepath + fileName
+
+        duration = variation.lengthInSeconds()
+
+        self.client.send_message("/recording/start",[file,duration])
+        self._generateSignal(variation)
+        self.client.send_message("/recording/end",0)

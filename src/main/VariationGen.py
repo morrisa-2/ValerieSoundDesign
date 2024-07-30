@@ -26,7 +26,7 @@ class VariationGen:
         """
         var = Variation.Variation(self.intent)
         connection = SCConnection.SCConnection()
-        connection.exportVariation(var)
+        connection.exportVariation(var,ordinal,filepath)
 
     def generate(self,numberToGen,filepath):
         """
