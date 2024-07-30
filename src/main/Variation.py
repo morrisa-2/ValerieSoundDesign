@@ -66,7 +66,8 @@ class Variation:
 
     def getMIDINotes(self):
         toReturn = []
-        for note in self.contents:
+        notes = self.contents[0]
+        for note in notes:
             toReturn.append(v.NOTES.index(note))
         return toReturn
 
