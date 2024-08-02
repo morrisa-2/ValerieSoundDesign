@@ -7,8 +7,8 @@ from Intents import *
 
 def main():
     vargen = VariationGen.VariationGen(Hello.Hello())
-    path = "C:/Users/Aspen/PycharmProjects/ValSoundDesign/generated"
-    vargen.generate(3,path)
+    path = "/Users/Aspen/PycharmProjects/ValSoundDesign/generated/"
+    vargen.generate(1,path)
 
 if __name__ == "__main__":
     main()

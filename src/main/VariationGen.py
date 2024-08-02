@@ -4,15 +4,33 @@ the parameters of that intent.
 
 Invariant:
  -  The desired Intent is passed in upon construction, and can be set afterward.
+ -  The "clock" instance variable keeps track of tempo for each intent.
+ -  The "connection" instance variable
  -  Any number of variations can be produced for each intent through the generate() function.
 """
 import src.main.Variation as Variation
 import SCConnection
+import clockblocks.clock
 
 class VariationGen:
     def __init__(self,intent):
         # TODO: Check whether intent is valid.
         self.intent = intent
+        tempo = self.intent.getTempo()
+        policySplit = 0.5
+        self.clock = clockblocks.Clock(initial_tempo=tempo,timing_policy=policySplit)
+        self.connection = SCConnection.SCConnection(self.clock)
+
+    def setIntent(self,intent):
+        """
+        Changes this VariationGen's intent to the
+        given Intent object.
+        :param intent: Intent to produce variations of.
+        """
+        # TODO: Check whether intent is valid.
+        self.intent = intent
+        tempo = self.intent.getTempo()
+        self.clock.tempo = tempo
 
     def _generate(self,ordinal,filepath):
         """
@@ -25,8 +43,7 @@ class VariationGen:
         which to store the generated wav file.
         """
         var = Variation.Variation(self.intent)
-        connection = SCConnection.SCConnection()
-        connection.exportVariation(var,ordinal,filepath)
+        self.connection.exportVariation(var,ordinal,filepath)
 
     def generate(self,numberToGen,filepath):
         """
@@ -45,4 +62,4 @@ class VariationGen:
         :return: A string representing this VariationGen.
         Ex. "VarGen: MyVarGen (Intent)"
         """
-        return "VarGen: " + self.__name__ + " (" + self.intent.__class__.__name__ + ")"
+        return "VarGen: " + self.__name__ + " (" + str(self.intent) + ")"

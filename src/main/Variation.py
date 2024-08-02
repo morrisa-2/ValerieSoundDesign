@@ -14,6 +14,9 @@ import copy
 
 class Variation:
 
+    # Accessing intent instance vars from here feels evil...
+    # TODO: Remove intent instance var accesses
+
     def __init__(self,intent):
         """
         Non-default constructor.
@@ -40,11 +43,12 @@ class Variation:
         Returns a string representation of this
         variation.
         :return: A string representing this variation.
-        Ex. "C5=0.5 G4=2 A3=1 (Intent)"
+        Ex. "Notes: A5 B5
+             Rhythm: 2 1"
+             Intent: Hello
         """
-        # TODO: Make this prettier
-        return ("Notes: " + str(self.contents[0]) + "\n" +
-                "Rhythm: " + str(self.contents[1]) + "\n" +
+        return ("Notes: " + str.join(" ",self.contents[0]) + "\n" +
+                "Rhythm: " + str.join(" ",self.contents[1]) + "\n" +
                 "Intent: " + str(self.intent))
 
     def lengthInSeconds(self):
@@ -54,7 +58,9 @@ class Variation:
         """
         rhythm = self.contents[1]
         totalBeats = sum(rhythm)
-        return totalBeats * self.intent.getTempo()
+        tempo = self.intent.getTempo()
+        beatsPerSecond = tempo / 60
+        return totalBeats / beatsPerSecond
 
     def nameOfIntent(self):
         """
@@ -94,26 +100,6 @@ class Variation:
     # TODO: Make rhythms more dynamic--weighting system?
     def applyDurations(self):
         return self.intent.getRhythm()
-
-        # """
-        # Given a list of notes, applies this intent's rhythm--or
-        # note duration--to the list. If the length of the intent
-        # exceeds the size of the rhythm, wraps around
-        # :param applyTo: List of notes to apply rhythms to.
-        # :return: applyTo with each note modified to reflect
-        # its duration.
-        # """
-        # rhythm = self.intent.getRhythm()
-        # i = 0
-        # toReturn = []
-        # for note in applyTo:
-        #     if (i >= len(rhythm)):
-        #         i = 0
-        #     toReturn.append(note + "=" + str(rhythm[i]))
-        #     i+=1
-        # return toReturn
-
-
 
     def intervals(self,checkIntOf):
         """

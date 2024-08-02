@@ -12,7 +12,7 @@ class ThankYou(Intent):
         self.mode = v.IONIAN
         self.contour = v.DESCENDING
         self.tempo = v.SLOW
-        self.rhythm = [v.LONG,v.SHORT, v.LONG]
+        self.rhythm = [v.LONG, v.EIGHTH, v.LONG]
         self.length = 3
         self.key = "A#"
         self.interval = v.MAJ2ND

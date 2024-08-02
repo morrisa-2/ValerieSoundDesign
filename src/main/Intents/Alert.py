@@ -12,7 +12,7 @@ class Alert(Intent):
         self.mode = v.LYDIAN
         self.contour = v.DESCENDING
         self.tempo = v.MODERATE
-        self.rhythm = [v.LONG, v.LONG]
+        self.rhythm = [v.HALF, v.HALF]
         self.length = 2
         self.key = "C"
         self.interval = v.TRI

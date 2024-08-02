@@ -12,7 +12,7 @@ class Unsure(Intent):
         self.mode = v.AEOLIAN
         self.contour = v.BOTH
         self.tempo = v.MODERATE
-        self.rhythm = [v.LONG,v.SHORT, v.LONG]
+        self.rhythm = [v.LONG, v.EIGHTH, v.LONG]
         self.length = 3
         self.key = "F"
         self.interval = v.MIN3RD

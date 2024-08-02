@@ -31,9 +31,9 @@ MAJ7TH = 11
 OCT = 12
 
 # RHYTHMIC DESCRIPTORS
-SHORT = 0.5
-MID = 1
-LONG = 2
+EIGHTH = 0.5
+QUARTER = 1
+HALF = 2
 
 # DIRECTIONAL DESCRIPTORS
 ASCENDING = "ASCENDING"
@@ -41,12 +41,10 @@ DESCENDING = "DESCENDING"
 BOTH = "BOTH"
 CONSTANT = "CONSTANT"
 
-# TEMPO - Measured in seconds per quarter note.
-# Does this make any sense? Why am I doing it this way????
-# TODO: Check how to format tempo.
-SLOW = 1
-MODERATE = 0.5
-FAST = 0.25
+# TEMPO - Measured in BPM.
+SLOW = 150
+MODERATE = 200
+FAST = 300
 
 # TODO: Make a Note class?
 # NOTES - No enharmonic spellings, sharps prioritized
@@ -67,7 +65,7 @@ DEFAULT_RANGE = 7
 DEFAULT_MODE = IONIAN
 DEFAULT_CONTOUR = BOTH
 DEFAULT_TEMPO = MODERATE
-DEFAULT_RHYTHM = [SHORT,SHORT,LONG]
+DEFAULT_RHYTHM = [EIGHTH, EIGHTH, HALF]
 DEFAULT_LENGTH = 3
 DEFAULT_KEY = "C"
 DEFAULT_INTERVAL = P5

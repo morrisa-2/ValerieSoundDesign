@@ -12,7 +12,7 @@ class Yes(Intent):
         self.mode = v.IONIAN
         self.contour = v.ASCENDING
         self.tempo = v.FAST
-        self.rhythm = [v.SHORT,v.LONG]
+        self.rhythm = [v.EIGHTH, v.LONG]
         self.length = 2
         self.key = "G"
         self.interval = v.P4

@@ -12,7 +12,7 @@ class Query(Intent):
         self.mode = v.AEOLIAN
         self.contour = v.ASCENDING
         self.tempo = v.FAST
-        self.rhythm = [v.SHORT, v.LONG]
+        self.rhythm = [v.EIGHTH, v.LONG]
         self.length = 2
         self.key = "E"
         self.interval = v.MAJ2ND

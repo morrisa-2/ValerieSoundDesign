@@ -12,7 +12,7 @@ class Goodbye(Intent):
         self.mode = v.IONIAN
         self.contour = v.DESCENDING
         self.tempo = v.SLOW
-        self.rhythm = [v.SHORT,v.SHORT,v.LONG]
+        self.rhythm = [v.EIGHTH, v.EIGHTH, v.LONG]
         self.length = 3
         self.key = "D"
         self.interval = v.P4

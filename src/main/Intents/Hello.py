@@ -13,7 +13,7 @@ class Hello(Intent):
         self.mode = v.IONIAN
         self.contour = v.BOTH
         self.tempo = v.FAST
-        self.rhythm = [v.LONG,v.LONG]
+        self.rhythm = [v.HALF,v.HALF]
         self.length = 2
         self.key = "D"
         self.interval = v.MAJ3RD

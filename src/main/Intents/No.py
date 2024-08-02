@@ -12,7 +12,7 @@ class No(Intent):
         self.mode = v.AEOLIAN
         self.contour = v.DESCENDING
         self.tempo = v.FAST
-        self.rhythm =  [v.SHORT,v.SHORT,v.LONG]
+        self.rhythm =  [v.EIGHTH, v.EIGHTH, v.LONG]
         self.length = 3
         self.key = "C"
         self.interval = v.MIN2ND
