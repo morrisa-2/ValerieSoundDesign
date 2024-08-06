@@ -12,14 +12,17 @@ import src.main.ValUtil as vu
 class Note:
 
     def __init__(self,noteName="C",octave=4,rhythVal=vc.QUARTER):
-        if noteName + str(octave) in vc.NOTES:
+        if vu.validateNoteName(noteName):
             self.noteName = noteName
         else:
             self.noteName = "C"
         self.octave = octave
         self.rhythVal = float(rhythVal)
+        self.MIDI = vu.MIDIFromNote(self.noteName, self.octave)
         self.freq = self._nameToFreq()
-        self.MIDI = self._nameToMIDI()
+
+    def __str__(self):
+        return self.getName() + str(self.getOctave()) + " " + str(self.getRhythVal())
 
     def _nameToFreq(self):
         """
@@ -27,20 +30,28 @@ class Note:
         :return: The frequency of this note if it is within
         the acceptable range of MIDI notes (C-1 - G9) as a double.
         """
-        selfPosition = vc.NOTES.index(self.getName() + str(self.getOctave()))
-        A4Position = vc.NOTES.index("A4")
-        distanceFromA4 = A4Position - selfPosition
+        # Edge case for A4
+        name = self.getName()
+        octave = self.getOctave()
         A4Freq = 440.0
-        freq = A4Freq * pow(2.0, (distanceFromA4 / 12.0))
-        return freq
+        if (name == "A" and octave == 4):
+            return A4Freq
+        else:
+            A4 = Note(noteName="A",octave=4)
+            distanceFromA4 = self.interval(A4)
+            freq = A4Freq * pow(2.0, (distanceFromA4 / 12.0))
+            return freq
 
-    def _nameToMIDI(self):
+    def interval(self,other):
         """
-        Converts the given note name to its associated MIDI number.
-        :return: The MIDI number of the given note if it is in
-        the acceptable range of MIDI notes (C-1 - G9) as an int.
+        Gets the interval between this note and the given note
+        in semitones as an integer.
+        :param other: Approach note.
+        :return: An integer >0 if this note is below the given note,
+        <0 if it is above the given note, and 0 if they share the same
+        pitch.
         """
-        return vc.NOTES.index(self.getName() + str(self.getOctave()))
+        return vu.interval(self,other)
 
     def getName(self):
         """
@@ -112,14 +123,14 @@ class Note:
             if (thisNoAcc in keys):
                 checkOther = exceptions[thisNoAcc]
                 if (otherNoAcc == checkOther):
-                    return -1
+                    return 1
             elif (otherNoAcc in keys):
                 checkThis = exceptions[otherNoAcc]
                 if (thisNoAcc == checkThis):
-                    return 1
+                    return -1
             else:
                 # Check distance between notes--not semitones, lexicographic!
-                return ord(thisNoAcc) - ord(otherNoAcc)
+                return ord(otherNoAcc) - ord(thisNoAcc)
 
     def _enharmonicExceptions(self, other):
         """
@@ -178,14 +189,14 @@ class Note:
                     return True
                 else:
                     if (adjacentLow):
-                        thisFlat = "b" in thisName
-                        otherSharp = "#" in otherName
-                        return thisFlat and otherSharp
-                    else:
-                        # Must be adjacentHigh because of earlier check.
                         thisSharp = "#" in thisName
                         otherFlat = "b" in otherName
                         return thisSharp and otherFlat
+                    else:
+                        # Must be adjacentHigh because of earlier check.
+                        thisFlat = "b" in thisName
+                        otherSharp = "#" in otherName
+                        return thisFlat and otherSharp
 
     def _octaveEquivalence(self, other):
         """
@@ -203,19 +214,15 @@ class Note:
             raise TypeError("Please input a Note object.")
         else:
             thisOct = self.getOctave()
-            otherOct = self.getOctave()
+            otherOct = other.getOctave()
             exceptions = {"C":"B#","Cb":"B"}
             thisName = self.getName()
             otherName = other.getName()
-            keys = exceptions.keys()
-            if (thisName in keys):
-                checkOther = exceptions[thisName]
-                if (otherName == checkOther):
-                    return thisOct - otherOct == 1
-            elif (otherName in keys):
-                checkThis = exceptions[otherName]
-                if (thisName == checkThis):
-                    return otherOct - thisOct == 1
+            keys = list(exceptions.keys())
+            if (thisName in keys) and (exceptions[thisName] == otherName):
+                return thisOct - otherOct == 1
+            elif (otherName in keys) and (exceptions[otherName] == thisName):
+                return otherOct - thisOct == 1
             else:
                 return thisOct == otherOct
 
@@ -272,7 +279,7 @@ class Note:
         else:
             # Inverting the result of the interval() function, as it
             # treats the second argument as an approach note.
-            return -vu.interval(self,other)
+            return -self.interval(other)
 
 
     def __eq__(self, other):

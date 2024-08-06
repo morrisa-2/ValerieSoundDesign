@@ -7,14 +7,18 @@ class NoteTestCase(unittest.TestCase):
         """Various test of determining enharmonic equivalence."""
         C4 = Note.Note("C",octave=4)
         Bs3 = Note.Note("B#",octave=3)
-        Db4 = Note.Note("Db",octave=4)
+        Ab3 = Note.Note("Ab",octave=3)
+        Gs3 = Note.Note("G#",octave=3)
 
         self.assertTrue(C4.overlap(C4),
                         "A note is enharmonically equivalent to itself.")
         self.assertTrue(C4.overlap(Bs3),
                         "C4 is enharmonically equivalent to B#3.")
-        self.assertTrue(C4.overlap(Db4),
-                        "C4 is enharmonically equivalent to Db4.")
+        self.assertTrue(Bs3.overlap(C4),
+                        "Enharmonic equivalence is symmetric--if a = b, then b = a.")
+        self.assertTrue(Ab3.overlap(Gs3),
+                        "Ab3 is enharmonically equivalent to G#3.")
+
 
     def test_EnharmonicsFalse(self):
         """These notes should not be enharmonically equivalent."""
