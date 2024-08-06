@@ -4,16 +4,16 @@ Model of the speech intent 'hello'.
 import src.main.ValConstants as v
 from src.main.Intents.Intent import Intent
 class Hello(Intent):
-    print("Hello loaded")
-    print(__file__)
+
     def __init__(self):
         super().__init__()
-        self.centralNote = "D5"
+        self.centralNote = "D"
+        self.centralOctave = 5
         self.pitchRange = 9
         self.mode = v.IONIAN
         self.contour = v.BOTH
         self.tempo = v.FAST
-        self.rhythm = [v.HALF,v.HALF]
+        self.rhythm = [v.HALFSTEP, v.HALFSTEP]
         self.length = 2
         self.key = "D"
         self.interval = v.MAJ3RD

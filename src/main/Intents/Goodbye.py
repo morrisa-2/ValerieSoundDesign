@@ -7,12 +7,13 @@ from src.main.Intents.Intent import Intent
 class Goodbye(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "F#5"
+        self.centralNote = "F#"
+        self.centralOctave = 5
         self.pitchRange = 8
         self.mode = v.IONIAN
         self.contour = v.DESCENDING
         self.tempo = v.SLOW
-        self.rhythm = [v.EIGHTH, v.EIGHTH, v.LONG]
+        self.rhythm = [v.EIGHTH, v.EIGHTH, v.HALF]
         self.length = 3
         self.key = "D"
         self.interval = v.P4

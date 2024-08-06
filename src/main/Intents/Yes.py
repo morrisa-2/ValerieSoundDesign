@@ -7,12 +7,13 @@ from src.main.Intents.Intent import Intent
 class Yes(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "G5"
+        self.centralNote = "G"
+        self.centralOctave = 5
         self.pitchRange = 5
         self.mode = v.IONIAN
         self.contour = v.ASCENDING
         self.tempo = v.FAST
-        self.rhythm = [v.EIGHTH, v.LONG]
+        self.rhythm = [v.EIGHTH, v.HALFSTEP]
         self.length = 2
         self.key = "G"
         self.interval = v.P4

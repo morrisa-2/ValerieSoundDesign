@@ -7,12 +7,13 @@ from src.main.Intents.Intent import Intent
 class Alert(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "F#7"
+        self.centralNote = "F#"
+        self.centralOctave = 7
         self.pitchRange = 11
         self.mode = v.LYDIAN
         self.contour = v.DESCENDING
         self.tempo = v.MODERATE
-        self.rhythm = [v.HALF, v.HALF]
+        self.rhythm = [v.HALFSTEP, v.HALFSTEP]
         self.length = 2
         self.key = "C"
         self.interval = v.TRI

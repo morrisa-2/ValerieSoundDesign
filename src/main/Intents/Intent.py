@@ -40,6 +40,7 @@ class Intent:
     # Instance vars
     def __init__(self):
         self.centralNote = v.DEFAULT_CENTER
+        self.centralOctave = v.DEFAULT_OCTAVE
         self.pitchRange = v.DEFAULT_RANGE
         self.mode = v.DEFAULT_MODE
         self.contour = v.DEFAULT_CONTOUR
@@ -69,7 +70,7 @@ class Intent:
     def getInterval(self):
         return self.interval
 
-    # Setters
+    # TODO: Remove setters
     def setCentralNote(self,note):
         self.centralNote = note
     def setPitchRange(self,range):

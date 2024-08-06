@@ -7,12 +7,13 @@ from src.main.Intents.Intent import Intent
 class Unsure(Intent):
     def __init__(self):
         super().__init__()
-        self.centralNote = "F5"
+        self.centralNote = "F"
+        self.centralOctave = 5
         self.pitchRange = 9
         self.mode = v.AEOLIAN
         self.contour = v.BOTH
         self.tempo = v.MODERATE
-        self.rhythm = [v.LONG, v.EIGHTH, v.LONG]
+        self.rhythm = [v.HALF, v.EIGHTH, v.HALF]
         self.length = 3
         self.key = "F"
         self.interval = v.MIN3RD
