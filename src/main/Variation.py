@@ -10,6 +10,7 @@ Invariant:
 import random
 import src.main.ValConstants as v
 import src.main.ValUtil as vu
+import src.main.Note as Note
 import copy
 
 class Variation:
@@ -27,18 +28,33 @@ class Variation:
         self.intent = intent
         self.contents = self.populate()
 
-    def _inRange(self,pitch):
-        centralIndex = v.NOTES.index(self.intent.getCentralNote())
-        pitchRange = self.intent.getPitchRange()
-        rangeMin = centralIndex - pitchRange
-        rangeMax = centralIndex + pitchRange
-        if(pitch in v.NOTES):
-            pitchIndex = v.NOTES.index(pitch)
-            return pitchIndex <= rangeMax and pitchIndex >= rangeMin
+    def getIntent(self):
+        """
+        :return: This Variation's Intent.
+        """
+        return self.intent
+
+    def _inRange(self,note):
+        """
+        Determines whether the given note is in the range
+        of this variation.
+        :param note: Note to check.
+        :return: True if the given note is within range,
+        false otherwise.
+        """
+        if not (isinstance(note,note.Note)):
+            raise TypeError("Please input an Note object.")
         else:
-            raise ValueError('Unrecognized note name.')
+            intent = self.getIntent()
+            centralNote = intent.getCentralNote()
+            interval = vu.interval(note,centralNote)
+            pitchRange = intent.getPitchRange()
+            return abs(interval) <= pitchRange
+
+
 
     def __str__(self):
+        # TODO: Fix
         """
         Returns a string representation of this
         variation.
@@ -70,6 +86,7 @@ class Variation:
         return str(self.intent)
 
     def populate(self):
+        # TODO: One array of Note objects
         """
         Populates this variation with notes and their
         rhythms.
@@ -88,18 +105,20 @@ class Variation:
 
     def getMIDINotes(self):
         toReturn = []
-        notes = self.contents[0]
-        for note in notes:
-            toReturn.append(v.NOTES.index(note))
+        for note in self.contents:
+            toReturn.append(note.getMIDI())
         return toReturn
 
     def getRhythm(self):
-        return copy.deepcopy(self.contents[1])
+        toReturn = []
+        for note in self.contents:
+            toReturn.append(note.getRhythVal())
+        return toReturn
 
     # This is a provisional solution and is going to sound clunky.
     # TODO: Make rhythms more dynamic--weighting system?
     def applyDurations(self):
-        return self.intent.getRhythm()
+        return self.getIntent().getRhythm()
 
     def intervals(self,checkIntOf):
         """
@@ -107,12 +126,13 @@ class Variation:
         a list containing the difference in semitones
         between those notes in order. If checkIntOf
         has one note, returns an empty list. If checkIntOf
-        is empty, raises an exception.
-        Ex. checkIntOf = ["C4","G4","D4"];
+        is empty or contains objects that are not of the Note class,
+        raises an exception.
+        Ex. checkIntOf = [C4,G4,D4];
         returns [7,-5]
-        :param checkIntOf: A list of notes to check the
+        :param checkIntOf: A list of Notes to check the
         intervals between.
-        :return: A list of the intervals between note in
+        :return: A list of the intervals between Notes in
         checkIntOf; an empty list if checkIntOf has one note.
         """
         toReturn = []
@@ -120,40 +140,53 @@ class Variation:
         if(len(checkIntOf) < 1):
             raise Exception("checkIntOf must contain at least one note.")
         else:
+            self._validateListOfNotes(checkIntOf)
             for note in checkIntOf[:-1]:
                 next = checkIntOf[i+1]
                 toReturn.append(vu.interval(note,next))
             return toReturn
 
+    def _validateListOfNotes(self,toVal):
+        """
+        Helper functiont that raises an error if the given list contains
+        any values that are not of the note class.
+        :param toVal: List of objects to validate.
+        """
+        if not all(isinstance(notes, Note.Note) for notes in toVal):
+            raise TypeError("All elements in the given list must be of the Note class.")
+
     # Passing toAdd into and out of these selection functions
     # feels weird, though I can't place why.
     # TODO: Consider alternatives to toAdd
-    def selectOnContour(self,availableNotes,toAdd):
+    def selectOnContour(self, availableNotes, addTo):
         """
         Select the next note in this sequence based on
         the contour of this intent.
         :param availableNotes: Notes to select from.
-        :param toAdd: List to add the next note to.
+        :param addTo: List to add the next note to.
         :return: toAdd with an additional note appended.
         """
-        contour = self.intent.getContour()
+        self._validateListOfNotes(addTo)
+        self._validateListOfNotes(availableNotes)
+        intent = self.getIntent()
+        contour = intent.getContour()
         turnAroundRange = 3
-        current = toAdd[-1]
+        current = addTo[-1]
         topOut = current not in availableNotes[-turnAroundRange:]
         bottomOut = current not in availableNotes[:turnAroundRange]
         currentIndex = availableNotes.index(current)
         if(contour == v.ASCENDING and not topOut):
             higherThanCurrent = random.choice(availableNotes[currentIndex:])
-            toAdd.append(higherThanCurrent)
+            addTo.append(higherThanCurrent)
         elif(contour == v.DESCENDING and not bottomOut):
             lowerThanCurrent = random.choice(availableNotes[:currentIndex])
-            toAdd.append(lowerThanCurrent)
+            addTo.append(lowerThanCurrent)
         else:
             anyButCurrent = random.choice(availableNotes)
             while(anyButCurrent == current):
                 anyButCurrent = random.choice(availableNotes)
-            toAdd.append(anyButCurrent)
-        return toAdd
+            addTo.append(anyButCurrent)
+        return addTo
 
     def selectOnInterval(self,availableNotes,fullRange,addTo):
         """
@@ -169,8 +202,11 @@ class Variation:
         :param addTo: List to add the next note to.
         :return: addTo with an additional note appended.
         """
+        self._validateListOfNotes(addTo)
+        self._validateListOfNotes(availableNotes)
+        self._validateListOfNotes(fullRange)
         current = addTo[-1]
-        interval = self.intent.getInterval()
+        interval = self.getIntent().getInterval()
         currentIndex = fullRange.index(current)
         roomToGoDown = currentIndex - interval >= 0
         roomToGoUp = currentIndex + interval < len(fullRange)
@@ -226,10 +262,16 @@ class Variation:
         :param addTo: List to add notes to.
         :return: addTo with the selected note added.
         """
+        self._validateListOfNotes(addTo)
+        self._validateListOfNotes(availableNotes)
+        intent = self.getIntent()
         intervals = self.intervals(addTo)
-        intervalMissing = self.intent.getInterval() not in intervals
-        centralMissing = self.intent.getCentralNote() not in addTo
-        notesRemaining = self.intent.getLength() - len(addTo)
+        intervalMissing = intent.getInterval() not in intervals
+        centralMissing = intent.getCentralNote() not in addTo
+
+        # Below is going to break when rhythm system changes
+        notesRemaining = len(intent.getRhythm()) - len(addTo)
+
         if (notesRemaining <= 0):
             raise Exception("Cannot add notes beyond the length of this intent.")
         else:
@@ -258,7 +300,7 @@ class Variation:
         if (coinFlip == 0):
             return self.selectOnInterval(availableNotes, self.findFullRange(), addTo)
         else:
-            central = self.intent.getCentralNote()
+            central = self.getIntent().getCentralNote()
             addTo.append(central)
             return addTo
 
@@ -271,6 +313,7 @@ class Variation:
         :param availableNotes: List of notes this variation can select from.
         :return: A list containing the first note of this variation.
         """
+        self._validateListOfNotes(availableNotes)
         toReturn = []
         contour = self.intent.getContour()
         if (contour == v.DESCENDING):
@@ -291,18 +334,16 @@ class Variation:
         return self.listOfAvailable(fullRange)
 
     def findKeyCenter(self,fullRange):
-        key = self.intent.getKey()
+        key = self.getIntent().getKey()
         notFound = True
         i = 0
         centralIndex = 0
         while (notFound & i < len(fullRange)):
             note = fullRange[i]
-            if key in note:
-                # Found a matching note name to the key center--check if pitch matches.
-                matchPitch = ('#' in key and '#' in note) or ('#' not in key and '#' not in note)
-                if matchPitch:
-                    notFound = False
-                    return i
+            name = note.getName()
+            if key in name:
+                notFound = False
+                return i
             else:
                 i += 1
         if (notFound):

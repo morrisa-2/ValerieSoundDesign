@@ -53,6 +53,10 @@ NOTES = (("B#","C"),("C#","Db"),"D",("D#","Eb"),
          ("E","Fb"),("E#","F"),("F#","Gb"),"G",
          ("G#","Ab"),"A",("A#","Bb"),("B","Cb"))
 
+# CIRCLE OF FIFTHS - Rudimentary, just for determining what notes to take for what keys.
+RIGHT_OF_C = ("G","D","A","E","B","F#")
+LEFT_OF_C = ("F","Bb","Eb","Ab","Db","Gb")
+
 # OCTAVE - Range encompasses all MIDI notes
 OCTAVES = (-1,9)
 

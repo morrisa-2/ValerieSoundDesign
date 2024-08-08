@@ -35,6 +35,8 @@ Brief explanation of qualities:
 '''
 
 import src.main.ValConstants as v
+import src.main.ValUtil as vu
+import src.main.Note as Note
 
 class Intent:
     # Instance vars
@@ -53,6 +55,8 @@ class Intent:
     # Getters
     def getCentralNote(self):
         return self.centralNote
+    def getCentralOctave(self):
+        return self.centralOctave
     def getPitchRange(self):
         return self.pitchRange
     def getMode(self):
@@ -70,26 +74,6 @@ class Intent:
     def getInterval(self):
         return self.interval
 
-    # TODO: Remove setters
-    def setCentralNote(self,note):
-        self.centralNote = note
-    def setPitchRange(self,range):
-        self.pitchRange = range
-    def setMode(self,mode):
-        self.mode = mode
-    def setContour(self,contour):
-        self.contour = contour
-    def setTempo(self,tempo):
-        self.tempo = tempo
-    def setRhythm(self,rhythm):
-        self.rhythm = rhythm
-    def setLength(self,length):
-        self.length = length
-    def setKey(self,key):
-        self.key = key
-    def setInterval(self,interval):
-        self.interval = interval
-
     def __str__(self):
         """
         Returns a string representation of this
@@ -98,3 +82,12 @@ class Intent:
         Ex. "Hello"
         """
         return self.__class__.__name__
+
+    def getAvailableNotes(self):
+        """
+        Gets a list of all the pitches that this intent
+        can play.
+        :return: A tuple containing Note objects that
+        represent this Intent's range of available pitches.
+        """
+        return vu.getNotes(self)

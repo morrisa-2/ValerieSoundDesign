@@ -1,8 +1,10 @@
 import src.main.ValConstants as vc
 import src.main.Note as Note
+import src.main.Intents.Intent as Intent
 
 """
-Miscellaneous util functions for the Valerie sound design project.
+Handles all interactions between elements of ValConstants and
+the rest of the classes in this project.
 """
 
 def interval(note1, note2):
@@ -84,3 +86,282 @@ def MIDIFromNote(noteName,octave):
         i += 1
     # If we've reached this point, the given note name is not valid.
     return -1
+
+def _getNotesInRange(intent):
+    """
+    Gets a list of note names that expresses the given Intent's
+    full range of notes to select from.
+    This does not select by key, only by octave.
+    :param intent: Intent to get the range of.
+    :return: A list of note names in the given intent's range.
+    Ex. 
+    """
+    if not (isinstance(intent,Intent.Intent)):
+        raise TypeError("Please input an Intent object.")
+    else:
+        toReturn = []
+        pitchRange = intent.getPitchRange()
+        centralNoteName = intent.getCentralNote()
+        centralIndex = _getNoteIndex(centralNoteName,vc.NOTES)
+        toReturn.append(vc.NOTES[centralIndex])
+        increment = 0
+        notesLen = len(vc.NOTES)
+        for i in range(0,pitchRange):
+            if (centralIndex + increment >= notesLen):
+                increment = -centralIndex
+            next = vc.NOTES[centralIndex + increment]
+            toReturn.append(next)
+        for i in range(-pitchRange,0):
+            if (centralIndex - increment < 0):
+                increment = notesLen - centralIndex - 1
+            next = vc.NOTES[centralIndex + increment]
+            toReturn.insert(0,next)
+        return toReturn
+
+def getNotes(intent):
+    """
+    Returns a tuple of Note objects that can be selected for
+    Variations of the given Intent.
+    :param intent: Intent to get the range of notes for.
+    :return: A tuple of Note objects that express the given
+    intent's range.
+    """
+    toReturn = []
+    listOfNoteNames = _filterByKey(intent)
+    listOfOctaves = _applyOctave(listOfNoteNames,intent)
+    length = len(listOfNoteNames)
+    for i in range(0,length):
+        note = Note.Note(noteName=listOfNoteNames[i],octave=listOfOctaves[i])
+        toReturn.append(note)
+    return tuple(toReturn)
+
+def _applyOctave(listOfNoteNames,intent):
+    """
+    Applies the correct octave to the given list of
+    note names based on the central note and octave
+    of the given intent.
+    :param listOfNoteNames: Collection of note names
+    to apply octaves to.
+    :param intent: Intent to base octave application off of.
+    :return: A list of integers that correspond to the octave
+    of each note name in listOfNoteNames.
+    """
+    toReturn = []
+    centralNote = intent.getCentralNote()
+    octave = intent.getCentralOctave()
+    centralIndex = listOfNoteNames.index(centralNote)
+    length = len(listOfNoteNames)
+
+    for i in range(centralIndex,length):
+        element = listOfNoteNames[i]
+        if i > centralIndex and "C" in element:
+            octave += 1
+        toReturn.append(octave)
+
+    octave = intent.getCentralOctave()
+
+    for i in range(centralIndex-1,-1,-1):
+        element = listOfNoteNames[i]
+        if "B" in element:
+            octave -= 1
+        toReturn.insert(0,octave)
+
+    return toReturn
+
+def _filterByKey(intent):
+    """
+    Given a collection containing note names and tuples of note names,
+    creates a new tuple of notes that adhere to the given intent's key.
+    :param intent: Intent that this range is to be applied to.
+    :return: A tuple of note names that are within the given intent's key.
+    """
+    if not (isinstance(intent,Intent.Intent)):
+        raise TypeError("Please input an Intent object.")
+    else:
+        keyCenter = intent.getKey()
+        mode = intent.getMode()
+        pitchRange = intent.getPitchRange()
+        toReturn = []
+        toReturn.append(keyCenter)
+        counter = 0
+        i = 0
+        modeLen = len(mode)
+
+        # Fill with all notes in key above key center.
+        while counter < pitchRange:
+            current = toReturn[-1]
+            steps = mode[i]
+            nextNote = _stepBy(steps,keyCenter,current)
+            toReturn.append(nextNote)
+            i += 1
+            counter += steps
+            if i >= modeLen:
+                i = 0
+
+        # Fill with all notes in key below key center.
+        i = modeLen - 1
+        counter = 0
+        while counter < pitchRange:
+            current = toReturn[0]
+            steps = -mode[i]
+            nextNote = _stepBy(steps,keyCenter,current)
+            toReturn.insert(0,nextNote)
+            i -= 1
+            counter += -steps
+            if i < 0:
+                i = modeLen - 1
+
+        return toReturn
+
+
+def _stepBy(steps,key,startingNote):
+    """
+    Step through vc.NOTES by the given amount of semitones from the
+    starting note and return the note within the given key at that position.
+    This does not account for octaves.
+    :param steps: Number of semitones to step by; negative integers indicate
+    steps down from the starting note and vice versa.
+    :param key: Key to filter notes by, as a note name on the circle of fifths.
+    :param startingNote: Note name to step from.
+    :return: The note name at the position n steps away from starting note
+    in vc.NOTES where n = steps argument. This note name must be in the
+    specified key.
+    """
+    startingIndex = _getNoteIndex(startingNote,vc.NOTES)
+    if (startingIndex == -1):
+        raise Exception("startingNote not in vc.NOTES.")
+    else:
+        notesLen = len(vc.NOTES)
+        goTo = startingIndex + steps
+        if (goTo > notesLen):
+            goTo = goTo - notesLen
+        elif (goTo < 0):
+            goTo = goTo + notesLen
+        element = vc.NOTES[goTo]
+        if (isinstance(element,tuple)):
+            return _pickByKey(key,element)
+        else:
+            return element
+
+
+
+def _pickByKey(key,toPickFrom):
+    """
+    Given a tuple of note names and a key,
+    returns the note name that is in that key.
+    :param key: Key to filter by.
+    :param toPickFrom: Tuple of two note names,
+    generally enharmonic spellings of the same pitch.
+    :return: The note name which fits within the given key.
+    """
+    # Maybe there's a better way to do this?
+    if key == "C#":
+        return _takeSharp(toPickFrom)
+    elif key == "Cb":
+        return _takeFlat(toPickFrom)
+    elif key == "C":
+        return _takeNatural(toPickFrom)
+    else:
+        sharpKey = key in vc.RIGHT_OF_C
+        flatKey = key in vc.LEFT_OF_C
+        if not (flatKey or sharpKey):
+            raise Exception("Unrecognized key.")
+        else:
+            natural = _takeNatural(toPickFrom)
+            if natural != None:
+                return natural
+            else:
+                if (sharpKey):
+                    return _takeSharp(toPickFrom)
+                else:
+                    return _takeFlat(toPickFrom)
+
+def _takeSharp(toPickFrom):
+    """
+    Given a tuple of two note names,
+    returns the note that is sharp.
+    :param toPickFrom: A tuple of two note names.
+    :return: The note name that is sharp, or null
+    if neither note name is sharp.
+    """
+    first = toPickFrom[0]
+    second = toPickFrom[1]
+    firstSharp = "#" in first
+    secondSharp = "#" in second
+    if firstSharp:
+        return first
+    elif secondSharp:
+        return second
+    else:
+        return None
+
+def _takeFlat(toPickFrom):
+    """
+    Given a tuple of two note names,
+    returns the note that is flat.
+    :param toPickFrom: A tuple of two note names.
+    :return: The note name that is flat, or null
+    if neither note name is flat.
+    """
+    first = toPickFrom[0]
+    second = toPickFrom[1]
+    firstFlat = "b" in first
+    secondFlat = "b" in second
+    if firstFlat:
+        return first
+    elif secondFlat:
+        return second
+    else:
+        return None
+
+def _takeNatural(toPickFrom):
+    """
+    Given a tuple of two note names,
+    returns the note that is natural.
+    :param toPickFrom: A tuple of two note names.
+    :return: The note name that is natural, or null
+    if neither note name is natural.
+    """
+    first = toPickFrom[0]
+    second = toPickFrom[1]
+    firstNatural = not ("b" in first or "#" in first)
+    secondNatural = not ("b" in second or "#" in second)
+    if firstNatural:
+        return first
+    elif secondNatural:
+        return second
+    else:
+        return None
+
+def _getNoteIndex(noteName,list):
+    """
+    Helper function that gets the index of a note name in
+    ValConstants. Note that this does not specify between
+    enharmonic spellings of notes, and only selects the
+    index of the tuple containing the given note name if it
+    is not its own element.
+    :param noteName: Name of note to get the index of.
+    :param list: List to get noteName's position in.
+    :return: The index of either the given note name in the given
+    collection, or the tuple containing it; -1 if the given note
+    name is not in list.
+    """
+    i = 0
+    found = False
+    notesLength = len(list)
+    while (not found) and (i < notesLength):
+        element = list[i]
+        if isinstance(element,tuple):
+            if (noteName in element):
+                return i
+            else:
+                i += 1
+        else:
+            if (noteName == element):
+                return i
+            else:
+                i += 1
+    # If we've reached this point, the given note name
+    # is not in ValConstants' list of notes.
+    return -1
+
