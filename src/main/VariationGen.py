@@ -11,15 +11,18 @@ Invariant:
 import src.main.Variation as Variation
 import SCConnection
 import clockblocks.clock
+import src.main.Intents.Intent as Intent
 
 class VariationGen:
     def __init__(self,intent):
-        # TODO: Check whether intent is valid.
-        self.intent = intent
-        tempo = self.intent.getTempo()
-        policySplit = 0.5
-        self.clock = clockblocks.Clock(initial_tempo=tempo,timing_policy=policySplit)
-        self.connection = SCConnection.SCConnection(self.clock)
+        if not (isinstance(intent,Intent.Intent)):
+            raise TypeError("Intent argument must be an Intent object.")
+        else:
+            self.intent = intent
+            tempo = self.intent.getTempo()
+            policySplit = 0.5
+            self.clock = clockblocks.Clock(initial_tempo=tempo,timing_policy=policySplit)
+            self.connection = SCConnection.SCConnection(self.clock)
 
     def setIntent(self,intent):
         """
@@ -27,10 +30,12 @@ class VariationGen:
         given Intent object.
         :param intent: Intent to produce variations of.
         """
-        # TODO: Check whether intent is valid.
-        self.intent = intent
-        tempo = self.intent.getTempo()
-        self.clock.tempo = tempo
+        if not (isinstance(intent,Intent.Intent)):
+            raise TypeError("Intent argument must be an Intent object.")
+        else:
+            self.intent = intent
+            tempo = self.intent.getTempo()
+            self.clock.tempo = tempo
 
     def _generate(self,ordinal,filepath):
         """
@@ -53,6 +58,7 @@ class VariationGen:
         :param filepath: Path to the directory in
         which to store the generated wav files.
         """
+        # TODO: Check validity of filepath
         for i in range(numberToGen):
             self._generate(i,filepath)
     def __str__(self):
