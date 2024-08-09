@@ -11,12 +11,9 @@ import random
 import src.main.ValConstants as v
 import src.main.ValUtil as vu
 import src.main.Note as Note
-import copy
+import src.main.Intents.Intent as Intent
 
 class Variation:
-
-    # Accessing intent instance vars from here feels evil...
-    # TODO: Remove intent instance var accesses
 
     def __init__(self,intent):
         """
@@ -24,9 +21,11 @@ class Variation:
         :param intent: Intent to generate variation of.
         Must be an Intent object or a child of Intent.
         """
-        # TODO: Check whether given intent is valid
-        self.intent = intent
-        self.contents = self.populate()
+        if not (isinstance(intent,Intent.Intent)):
+            raise TypeError("Intent parameter must be an Intent object.")
+        else:
+            self.intent = intent
+            self.contents = self._populate()
 
     def getIntent(self):
         """
@@ -51,10 +50,7 @@ class Variation:
             pitchRange = intent.getPitchRange()
             return abs(interval) <= pitchRange
 
-
-
     def __str__(self):
-        # TODO: Fix
         """
         Returns a string representation of this
         variation.
@@ -63,16 +59,19 @@ class Variation:
              Rhythm: 2 1"
              Intent: Hello
         """
-        return ("Notes: " + str.join(" ",self.contents[0]) + "\n" +
-                "Rhythm: " + str.join(" ",self.contents[1]) + "\n" +
-                "Intent: " + str(self.intent))
+        toJoin = []
+        for note in self.contents:
+            noteStr = str(note)
+            toJoin.append(noteStr)
+        return "Notes: " + str.join(" ",toJoin) + "\n" + "Intent: " + str(self.getIntent())
+
 
     def lengthInSeconds(self):
         """
         Gets the length of this variation in seconds.
         :return: The length of this variation in seconds as an integer.
         """
-        rhythm = self.contents[1]
+        rhythm = self.getRhythm()
         totalBeats = sum(rhythm)
         tempo = self.intent.getTempo()
         beatsPerSecond = tempo / 60
@@ -85,23 +84,20 @@ class Variation:
         """
         return str(self.intent)
 
-    def populate(self):
+    def _populate(self):
         # TODO: One array of Note objects
         """
-        Populates this variation with notes and their
-        rhythms.
-        :return: A 2D array consisting of two arrays--
-        one of note names and another of their rhythmic value.
-        Ex. [["C5","D#5","A5"],[v.EIGHTH,v.QUARTER,v.EIGHTH]]
+        Populates this variation with notes.
+        :return: An array of notes to be played
+        and recorded for this variation.
         """
-        availableNotes = self.findAvailableNotes()
-        notes = self.start(availableNotes)
+        availableNotes = self._findAvailableNotes()
+        notes = self._start(availableNotes)
         length = self.intent.getLength()
         for i in range(length - 1):
-            notes = self.conditionalSelection(availableNotes,notes)
-        rhythm = self.applyDurations()
-        toPlay = [notes,rhythm]
-        return toPlay
+            notes = self._conditionalSelection(availableNotes, notes)
+        notes = self._applyDurations(notes)
+        return notes
 
     def getMIDINotes(self):
         toReturn = []
@@ -117,10 +113,31 @@ class Variation:
 
     # This is a provisional solution and is going to sound clunky.
     # TODO: Make rhythms more dynamic--weighting system?
-    def applyDurations(self):
-        return self.getIntent().getRhythm()
+    def _applyDurations(self, applyTo):
+        """
+        Given a list of notes, applies the rhythm of this variation
+        to those notes.
+        :param applyTo: List of notes to apply rhythms to.
+        :return: applyTo with each note's rhythmic value adjusted to
+        match the rhythm of this variation.
+        """
+        self._validateListOfNotes(applyTo)
 
-    def intervals(self,checkIntOf):
+        rhythm = self.getIntent().getRhythm()
+        length = len(applyTo)
+        toReturn = []
+
+        for i in range(0,length):
+            note = applyTo[i]
+            duration = rhythm[i]
+            name = note.getName()
+            octave = note.getOctave()
+            copy = Note.Note(noteName=name,octave=octave,rhythVal=duration)
+            toReturn.append(copy)
+
+        return toReturn
+
+    def _intervals(self, checkIntOf):
         """
         Given a list of at least two notes, returns
         a list containing the difference in semitones
@@ -158,7 +175,7 @@ class Variation:
     # Passing toAdd into and out of these selection functions
     # feels weird, though I can't place why.
     # TODO: Consider alternatives to toAdd
-    def selectOnContour(self, availableNotes, addTo):
+    def _selectOnContour(self, availableNotes, addTo):
         """
         Select the next note in this sequence based on
         the contour of this intent.
@@ -188,7 +205,7 @@ class Variation:
             addTo.append(anyButCurrent)
         return addTo
 
-    def selectOnInterval(self,availableNotes,fullRange,addTo):
+    def _selectOnInterval(self, availableNotes, addTo):
         """
         Select the next note in this sequence based on
         the interval of this intent. Selects direction of
@@ -197,54 +214,23 @@ class Variation:
         on either side, raises an index exception. If neither
         note is in key, returns addTo as it was passed in originally.
         :param availableNotes: Notes to select from.
-        :param fullRange: Full range of notes surrounding
-        the central note, including those outside the desired key.
         :param addTo: List to add the next note to.
         :return: addTo with an additional note appended.
         """
         self._validateListOfNotes(addTo)
         self._validateListOfNotes(availableNotes)
-        self._validateListOfNotes(fullRange)
+
         current = addTo[-1]
-        interval = self.getIntent().getInterval()
-        currentIndex = fullRange.index(current)
-        roomToGoDown = currentIndex - interval >= 0
-        roomToGoUp = currentIndex + interval < len(fullRange)
-        if (not roomToGoUp and not roomToGoDown):
-            raise IndexError("Desired interval exceeds range.")
-        else:
-            if (roomToGoDown):
-                downInKey = fullRange[currentIndex - interval] in availableNotes
-                canGoDown = roomToGoDown and downInKey
-            else:
-                downInKey = False
-                canGoDown = False
+        desiredInterval = self.getIntent().getInterval()
+        pickBetween = []
+        for note in availableNotes:
+            interval = note.interval(current)
+            if (abs(interval) == desiredInterval):
+                pickBetween.append(note)
+        addTo.append(random.choice(pickBetween))
+        return addTo
 
-            if (roomToGoUp):
-                upInKey = fullRange[currentIndex + interval] in availableNotes
-                canGoUp = roomToGoUp and upInKey
-            else:
-                upInKey = False
-                canGoUp = False
-
-            if(not upInKey and not downInKey):
-                return addTo
-            else:
-                if(not canGoUp and canGoDown):
-                    noteToAdd = fullRange[currentIndex - interval]
-                elif(canGoUp and not canGoDown):
-                    noteToAdd = fullRange[currentIndex + interval]
-                else:
-                    coinFlip = random.randrange(2)
-                    if (coinFlip == 0):
-                        noteToAdd = fullRange[currentIndex - interval]
-                    else:
-                        noteToAdd = fullRange[currentIndex + interval]
-
-                addTo.append(noteToAdd)
-                return addTo
-
-    def conditionalSelection(self,availableNotes,addTo):
+    def _conditionalSelection(self, availableNotes, addTo):
         """
         Selection method based on the notes remaining in
         this variation. If the central note has not yet
@@ -265,7 +251,7 @@ class Variation:
         self._validateListOfNotes(addTo)
         self._validateListOfNotes(availableNotes)
         intent = self.getIntent()
-        intervals = self.intervals(addTo)
+        intervals = self._intervals(addTo)
         intervalMissing = intent.getInterval() not in intervals
         centralMissing = intent.getCentralNote() not in addTo
 
@@ -280,12 +266,12 @@ class Variation:
             else:
                 randomByLength = random.randrange(notesRemaining)
                 if (randomByLength == 0 and intervalMissing):
-                    return self.selectOnInterval(availableNotes,self.findFullRange(),addTo)
+                    return self._selectOnInterval(availableNotes, addTo)
                 elif (randomByLength == 0 and centralMissing):
                     addTo.append(self.intent.getCentralNote())
                     return addTo
                 else:
-                    return self.selectOnContour(availableNotes,addTo)
+                    return self._selectOnContour(availableNotes, addTo)
 
     def _chooseToSupersede(self, availableNotes, addTo):
         """
@@ -298,13 +284,13 @@ class Variation:
         """
         coinFlip = random.randrange(2)
         if (coinFlip == 0):
-            return self.selectOnInterval(availableNotes, self.findFullRange(), addTo)
+            return self._selectOnInterval(availableNotes, addTo)
         else:
             central = self.getIntent().getCentralNote()
             addTo.append(central)
             return addTo
 
-    def start(self,availableNotes):
+    def _start(self, availableNotes):
         """
         Selects the first note of this variation. Selection
         is restrained to half of available notes based on contour.
@@ -328,51 +314,5 @@ class Variation:
             toReturn.append(random.choice(availableNotes))
         return toReturn
 
-
-    def findAvailableNotes(self):
-        fullRange = self.findFullRange()
-        return self.listOfAvailable(fullRange)
-
-    def findKeyCenter(self,fullRange):
-        key = self.getIntent().getKey()
-        notFound = True
-        i = 0
-        centralIndex = 0
-        while (notFound & i < len(fullRange)):
-            note = fullRange[i]
-            name = note.getName()
-            if key in name:
-                notFound = False
-                return i
-            else:
-                i += 1
-        if (notFound):
-            raise IndexError('Key center not present in the given range.')
-
-    def listOfAvailable(self,fullRange):
-        centralIndex = self.findKeyCenter(fullRange)
-        mode = self.intent.getMode()
-        pitchRange = self.intent.getPitchRange()
-        availableNotes = []
-        i = centralIndex
-        j = 0
-        while (i < len(fullRange)):
-            availableNotes.append(fullRange[i])
-            i += mode[j]
-            j += 1
-        j = -1
-        i = centralIndex
-        while (i > 0):
-            i -= mode[j]
-            availableNotes.insert(0,fullRange[i])
-            j -= 1
-        return availableNotes
-
-    def findFullRange(self):
-        centralIndex = v.NOTES.index(self.intent.getCentralNote())
-        pitchRange = self.intent.getPitchRange()
-        if (centralIndex - pitchRange > 0 & centralIndex + pitchRange < len(v.NOTES)):
-            fullRange = [pitch for pitch in v.NOTES if self._inRange(pitch)]
-            return fullRange
-        else:
-            raise ValueError('Given range exceeds available pitches.')
+    def _findAvailableNotes(self):
+        return vu.getNotes(self.getIntent())
