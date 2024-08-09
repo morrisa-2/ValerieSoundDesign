@@ -105,6 +105,12 @@ class Variation:
             toReturn.append(note.getMIDI())
         return toReturn
 
+    def getFrequencies(self):
+        toReturn = []
+        for note in self.contents:
+            toReturn.append(note.getFreq())
+        return toReturn
+
     def getRhythm(self):
         toReturn = []
         for note in self.contents:
