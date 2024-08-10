@@ -233,7 +233,10 @@ class Variation:
             interval = note.interval(current)
             if (abs(interval) == desiredInterval):
                 pickBetween.append(note)
-        addTo.append(random.choice(pickBetween))
+
+        if (len(pickBetween) > 0):
+            addTo.append(random.choice(pickBetween))
+
         return addTo
 
     def _conditionalSelection(self, availableNotes, addTo):

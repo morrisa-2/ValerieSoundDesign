@@ -66,7 +66,7 @@ ScampUtils.instrumentFromSynthDef(
 
 	SynthDef("Valerie",{
 		arg freq=640, volume=0.7, gate=0;
-		var sig = SinOsc.ar(pitch);
+		var sig = SinOsc.ar(freq);
 		var env = EnvGate(gate:gate,fadeTime:0.1);
 		Out.ar(0, sig * volume * env);
 	});

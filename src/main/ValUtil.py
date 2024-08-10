@@ -19,17 +19,16 @@ def interval(note1, note2):
     """
     n1IsNote = isinstance(note1,Note.Note)
     n2IsNote = isinstance(note2,Note.Note)
-    if (not n1IsNote or not n2IsNote):
+    if not (n1IsNote or n2IsNote):
         raise TypeError("Please input two Note objects.")
     else:
-        n1MIDI = note1.getMIDI()
-        n2MIDI = note2.getMIDI()
-        if (n1MIDI > vc.MIDIMAX or n1MIDI < vc.MIDIMIN):
-            raise Exception("Starting note is an unrecognized note name.")
-        elif (n2MIDI > vc.MIDIMAX or n2MIDI < vc.MIDIMIN):
-            raise Exception("Approach note is an unrecognized note name.")
-        else:
-            return note2.getMIDI() - note1.getMIDI()
+        octave1 = note1.getOctave()
+        octave2 = note2.getOctave()
+        octDifference = octave2 - octave1
+        index1 = _getNoteIndex(note1.getName(),vc.NOTES)
+        index2 = _getNoteIndex(note2.getName(),vc.NOTES)
+        indexDifference = index2 - index1
+        return (12 * octDifference) + indexDifference
 
 def validateNoteName(noteName):
     """

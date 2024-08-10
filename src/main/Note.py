@@ -38,7 +38,7 @@ class Note:
             return A4Freq
         else:
             A4 = Note(noteName="A",octave=4)
-            distanceFromA4 = self.interval(A4)
+            distanceFromA4 = A4.interval(self)
             freq = A4Freq * pow(2.0, (distanceFromA4 / 12.0))
             return freq
 
