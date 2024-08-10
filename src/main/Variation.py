@@ -85,7 +85,6 @@ class Variation:
         return str(self.intent)
 
     def _populate(self):
-        # TODO: One array of Note objects
         """
         Populates this variation with notes.
         :return: An array of notes to be played
@@ -93,8 +92,8 @@ class Variation:
         """
         availableNotes = self._findAvailableNotes()
         notes = self._start(availableNotes)
-        length = self.intent.getLength()
-        for i in range(length - 1):
+        length = len(self.getIntent().getRhythm())
+        for i in range(0,length - 1):
             notes = self._conditionalSelection(availableNotes, notes)
         notes = self._applyDurations(notes)
         return notes
@@ -295,7 +294,9 @@ class Variation:
         if (coinFlip == 0):
             return self._selectOnInterval(availableNotes, addTo)
         else:
-            central = self.getIntent().getCentralNote()
+            centralName = self.getIntent().getCentralNote()
+            centralOct = self.getIntent().getCentralOctave()
+            central = Note.Note(noteName=centralName,octave=centralOct)
             addTo.append(central)
             return addTo
 
