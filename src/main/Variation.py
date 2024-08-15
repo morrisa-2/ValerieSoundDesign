@@ -33,6 +33,9 @@ class Variation:
         """
         return self.intent
 
+    def getTempo(self):
+        return self.getIntent().getTempo()
+
     def _inRange(self,note):
         """
         Determines whether the given note is in the range

@@ -10,7 +10,6 @@ Invariant:
 """
 import src.main.Variation as Variation
 import SCConnection
-import clockblocks.clock
 import src.main.Intents.Intent as Intent
 
 class VariationGen:
@@ -19,10 +18,7 @@ class VariationGen:
             raise TypeError("Intent argument must be an Intent object.")
         else:
             self.intent = intent
-            tempo = self.intent.getTempo()
-            policySplit = 0.5
-            self.clock = clockblocks.Clock(initial_tempo=tempo,timing_policy=policySplit)
-            self.connection = SCConnection.SCConnection(self.clock)
+            self.connection = SCConnection.SCConnection()
 
     def setIntent(self,intent):
         """
@@ -34,8 +30,6 @@ class VariationGen:
             raise TypeError("Intent argument must be an Intent object.")
         else:
             self.intent = intent
-            tempo = self.intent.getTempo()
-            self.clock.tempo = tempo
 
     def _generate(self,ordinal,filepath):
         """
