@@ -25,6 +25,7 @@ class Variation:
             raise TypeError("Intent parameter must be an Intent object.")
         else:
             self.intent = intent
+            self.rhythm = self._pickRhythm()
             self.contents = self._populate()
 
     def getIntent(self):
@@ -95,8 +96,8 @@ class Variation:
         """
         availableNotes = self._findAvailableNotes()
         notes = self._start(availableNotes)
-        length = len(self.getIntent().getRhythm())
-        for i in range(0,length - 1):
+        length = len(self.rhythm)
+        for i in range(1,length):
             notes = self._conditionalSelection(availableNotes, notes)
         notes = self._applyDurations(notes)
         return notes
@@ -119,31 +120,43 @@ class Variation:
             toReturn.append(note.getRhythVal())
         return toReturn
 
-    # This is a provisional solution and is going to sound clunky.
-    # TODO: Make rhythms more dynamic--weighting system?
+    # TODO: Switch to Rhythm class.
     def _applyDurations(self, applyTo):
         """
         Given a list of notes, applies the rhythm of this variation
         to those notes.
+        :param rhythm: Ordered list of rhythm values to apply.
         :param applyTo: List of notes to apply rhythms to.
         :return: applyTo with each note's rhythmic value adjusted to
         match the rhythm of this variation.
         """
         self._validateListOfNotes(applyTo)
 
-        rhythm = self.getIntent().getRhythm()
-        length = len(applyTo)
+        length = len(self.rhythm)
         toReturn = []
 
         for i in range(0,length):
             note = applyTo[i]
-            duration = rhythm[i]
+            duration = self.rhythm[i]
             name = note.getName()
             octave = note.getOctave()
             copy = Note.Note(noteName=name,octave=octave,rhythVal=duration)
             toReturn.append(copy)
 
         return toReturn
+
+    def _pickRhythm(self):
+        """
+        Chooses the rhythm to use for this variation.
+        :return: This variation's rhythm.
+        """
+        intent = self.getIntent()
+        sides = 3
+        die = random.randrange(0,sides)
+        if die == 0:
+            return intent.getRhythm()
+        else:
+            return vu.pullRhythmFromPool()
 
     def _intervals(self, checkIntOf):
         """
@@ -267,7 +280,7 @@ class Variation:
         centralMissing = intent.getCentralNote() not in addTo
 
         # Below is going to break when rhythm system changes
-        notesRemaining = len(intent.getRhythm()) - len(addTo)
+        notesRemaining = len(self.rhythm) - len(addTo)
 
         if (notesRemaining <= 0):
             raise Exception("Cannot add notes beyond the length of this intent.")
@@ -295,13 +308,25 @@ class Variation:
         """
         coinFlip = random.randrange(2)
         if (coinFlip == 0):
-            return self._selectOnInterval(availableNotes, addTo)
+            interval = self._selectOnInterval(availableNotes, addTo)
+            if len(interval) > len(addTo):
+                return interval
+            else:
+                return self._addCentral(addTo)
         else:
-            centralName = self.getIntent().getCentralNote()
-            centralOct = self.getIntent().getCentralOctave()
-            central = Note.Note(noteName=centralName,octave=centralOct)
-            addTo.append(central)
-            return addTo
+            return self._addCentral(addTo)
+
+    def _addCentral(self,addTo):
+        """
+        Adds the central note of this intent to the given list.
+        :param addTo: List of notes to add the central note to.
+        :return:
+        """
+        centralName = self.getIntent().getCentralNote()
+        centralOct = self.getIntent().getCentralOctave()
+        central = Note.Note(noteName=centralName, octave=centralOct)
+        addTo.append(central)
+        return addTo
 
     def _start(self, availableNotes):
         """

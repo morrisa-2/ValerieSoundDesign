@@ -380,6 +380,7 @@ def addRhythmToPool(rhythm):
         return False
     else:
         pool.append(rhythm)
+        return True
 
 def pullRhythmFromPool():
     """
