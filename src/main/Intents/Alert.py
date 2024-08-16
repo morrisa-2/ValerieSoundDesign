@@ -1,7 +1,8 @@
 '''
 Model of the speech intent 'alert'.
 '''
-import src.main.ValConstants as v
+import src.main.ValConstants as vc
+import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
 
 class Alert(Intent):
@@ -10,13 +11,14 @@ class Alert(Intent):
         self.centralNote = "F#"
         self.centralOctave = 7
         self.pitchRange = 11
-        self.mode = v.LYDIAN
-        self.contour = v.DESCENDING
-        self.tempo = v.MODERATE
-        self.rhythm = [v.HALFSTEP, v.HALFSTEP]
+        self.mode = vc.LYDIAN
+        self.contour = vc.DESCENDING
+        self.tempo = vc.MODERATE
+        self.rhythm = [vc.HALFSTEP, vc.HALFSTEP]
         self.length = 2
         self.key = "C"
-        self.interval = v.TRI
+        self.interval = vc.TRI
+        vu.addRhythmToPool(self.rhythm)
 
     def getCentralNote(self):
         return super().getCentralNote()

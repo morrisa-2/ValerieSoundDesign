@@ -1,3 +1,4 @@
+import random
 import src.main.ValConstants as vc
 import src.main.Note as Note
 import src.main.Intents.Intent as Intent
@@ -364,3 +365,27 @@ def _getNoteIndex(noteName,list):
     # is not in ValConstants' list of notes.
     return -1
 
+# TODO: Change to Rhythm class.
+def addRhythmToPool(rhythm):
+    """
+    Adds the given rhythm to the available pool of
+    rhythms for a variation to select from. Cannot add
+    duplicate rhythms.
+    :param rhythm: Ordered list of note durations.
+    :return: True if the given rhythm was successfully added
+    to the pool, false otherwise.
+    """
+    pool = vc.RHYTHM_POOL
+    if rhythm in pool:
+        return False
+    else:
+        pool.append(rhythm)
+
+def pullRhythmFromPool():
+    """
+    Gets a random rhythm from the available pool of
+    rhythms for a variation to select from.
+    :return: A randomly selected rhythm.
+    """
+    pool = vc.RHYTHM_POOL
+    return random.choice(pool)

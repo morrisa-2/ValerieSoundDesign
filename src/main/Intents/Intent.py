@@ -34,23 +34,22 @@ Brief explanation of qualities:
                 ascending.
 '''
 
-import src.main.ValConstants as v
+import src.main.ValConstants as vc
 import src.main.ValUtil as vu
-import src.main.Note as Note
 
 class Intent:
     # Instance vars
     def __init__(self):
-        self.centralNote = v.DEFAULT_CENTER
-        self.centralOctave = v.DEFAULT_OCTAVE
-        self.pitchRange = v.DEFAULT_RANGE
-        self.mode = v.DEFAULT_MODE
-        self.contour = v.DEFAULT_CONTOUR
-        self.tempo = v.DEFAULT_TEMPO
-        self.rhythm = v.DEFAULT_RHYTHM
-        self.length = v.DEFAULT_LENGTH
-        self.key = v.DEFAULT_KEY
-        self.interval = v.DEFAULT_INTERVAL
+        self.centralNote = vc.DEFAULT_CENTER
+        self.centralOctave = vc.DEFAULT_OCTAVE
+        self.pitchRange = vc.DEFAULT_RANGE
+        self.mode = vc.DEFAULT_MODE
+        self.contour = vc.DEFAULT_CONTOUR
+        self.tempo = vc.DEFAULT_TEMPO
+        self.rhythm = vc.DEFAULT_RHYTHM
+        self.length = vc.DEFAULT_LENGTH
+        self.key = vc.DEFAULT_KEY
+        self.interval = vc.DEFAULT_INTERVAL
 
     # Getters
     def getCentralNote(self):

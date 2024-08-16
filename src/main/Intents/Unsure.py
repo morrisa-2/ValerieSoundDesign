@@ -1,7 +1,8 @@
 '''
 Model of the speech intent 'unsure'.
 '''
-import src.main.ValConstants as v
+import src.main.ValConstants as vc
+import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
 
 class Unsure(Intent):
@@ -10,10 +11,30 @@ class Unsure(Intent):
         self.centralNote = "F"
         self.centralOctave = 5
         self.pitchRange = 9
-        self.mode = v.AEOLIAN
-        self.contour = v.BOTH
-        self.tempo = v.MODERATE
-        self.rhythm = [v.HALF, v.EIGHTH, v.HALF]
+        self.mode = vc.AEOLIAN
+        self.contour = vc.BOTH
+        self.tempo = vc.MODERATE
+        self.rhythm = [vc.HALF, vc.EIGHTH, vc.HALF]
         self.length = 3
         self.key = "F"
-        self.interval = v.MIN3RD
+        self.interval = vc.MIN3RD
+        vu.addRhythmToPool(self.rhythm)
+
+    def getCentralNote(self):
+        return super().getCentralNote()
+    def getPitchRange(self):
+        return super().getPitchRange()
+    def getMode(self):
+        return super().getMode()
+    def getContour(self):
+        return super().getContour()
+    def getTempo(self):
+        return super().getTempo()
+    def getRhythm(self):
+        return super().getRhythm()
+    def getLength(self):
+        return super().getLength()
+    def getKey(self):
+        return super().getKey()
+    def getInterval(self):
+        return super().getInterval()

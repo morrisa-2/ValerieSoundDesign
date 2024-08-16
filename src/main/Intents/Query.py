@@ -1,7 +1,8 @@
 '''
 Model of the speech intent 'query'.
 '''
-import src.main.ValConstants as v
+import src.main.ValConstants as vc
+import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
 
 class Query(Intent):
@@ -10,10 +11,30 @@ class Query(Intent):
         self.centralNote = "C#"
         self.centralOctave = 5
         self.pitchRange = 9
-        self.mode = v.AEOLIAN
-        self.contour = v.ASCENDING
-        self.tempo = v.FAST
-        self.rhythm = [v.EIGHTH, v.HALF]
+        self.mode = vc.AEOLIAN
+        self.contour = vc.ASCENDING
+        self.tempo = vc.FAST
+        self.rhythm = [vc.EIGHTH, vc.HALF]
         self.length = 2
         self.key = "E"
-        self.interval = v.MAJ2ND
+        self.interval = vc.MAJ2ND
+        vu.addRhythmToPool(self.rhythm)
+
+    def getCentralNote(self):
+        return super().getCentralNote()
+    def getPitchRange(self):
+        return super().getPitchRange()
+    def getMode(self):
+        return super().getMode()
+    def getContour(self):
+        return super().getContour()
+    def getTempo(self):
+        return super().getTempo()
+    def getRhythm(self):
+        return super().getRhythm()
+    def getLength(self):
+        return super().getLength()
+    def getKey(self):
+        return super().getKey()
+    def getInterval(self):
+        return super().getInterval()

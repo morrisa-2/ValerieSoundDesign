@@ -1,7 +1,8 @@
 '''
 Model of the speech intent 'goodbye'.
 '''
-import src.main.ValConstants as v
+import src.main.ValConstants as vc
+import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
 
 class Goodbye(Intent):
@@ -10,13 +11,14 @@ class Goodbye(Intent):
         self.centralNote = "F#"
         self.centralOctave = 5
         self.pitchRange = 8
-        self.mode = v.IONIAN
-        self.contour = v.DESCENDING
-        self.tempo = v.SLOW
-        self.rhythm = [v.EIGHTH, v.EIGHTH, v.HALF]
+        self.mode = vc.IONIAN
+        self.contour = vc.DESCENDING
+        self.tempo = vc.SLOW
+        self.rhythm = [vc.EIGHTH, vc.EIGHTH, vc.HALF]
         self.length = 3
         self.key = "D"
-        self.interval = v.P4
+        self.interval = vc.P4
+        vu.addRhythmToPool(self.rhythm)
 
     def getCentralNote(self):
         return super().getCentralNote()
