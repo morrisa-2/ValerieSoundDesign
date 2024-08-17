@@ -4,6 +4,7 @@ Model of the speech intent 'unsure'.
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
+from src.main.Rhythm import Rhythm
 
 class Unsure(Intent):
     def __init__(self):
@@ -14,7 +15,7 @@ class Unsure(Intent):
         self.mode = vc.AEOLIAN
         self.contour = vc.BOTH
         self.tempo = vc.MODERATE
-        self.rhythm = [vc.HALF, vc.EIGHTH, vc.HALF]
+        self.rhythm = Rhythm([vc.HALF, vc.EIGHTH, vc.HALF])
         self.length = 3
         self.key = "F"
         self.interval = vc.MIN3RD

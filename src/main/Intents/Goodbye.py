@@ -3,6 +3,7 @@ Model of the speech intent 'goodbye'.
 '''
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
+from src.main.Rhythm import Rhythm
 from src.main.Intents.Intent import Intent
 
 class Goodbye(Intent):
@@ -14,7 +15,7 @@ class Goodbye(Intent):
         self.mode = vc.IONIAN
         self.contour = vc.DESCENDING
         self.tempo = vc.SLOW
-        self.rhythm = [vc.EIGHTH, vc.EIGHTH, vc.HALF]
+        self.rhythm = Rhythm([vc.EIGHTH, vc.EIGHTH, vc.HALF])
         self.length = 3
         self.key = "D"
         self.interval = vc.P4

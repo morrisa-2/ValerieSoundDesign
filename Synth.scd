@@ -16,24 +16,32 @@ Routine({
 	p = List.new(2); // Pitches
 	r = List.new(2); // Rhythm
 	v = SynthDef(\valerie, { |out, gate = 1,
-	freq = 440, freqlag = 0.1, detun = 1.008, pan = 0,
-	ffreq = 1200, ffreqMul = 3, ffreqDcy = 0.15, rq = 0.2,
-	atk = 0.005, dcy = 0.2, sus = 0.6, rel = 0.1|
+		freq = 440, freqlag = 0.1, detun = 1.008, pan = 0,
+		ffreq = 20000, ffreqMul = 3, ffreqDcy = 0.15, rq = 0.2,
+		atk = 0.15, dcy = 0, sus = 1, rel = 0.08|
 
-	// Voicer uses 'gate' for velocity
-	var amp = Latch.kr(gate, gate).linlin(0, 1, 0.05, 0.25);
+		// Voicer uses 'gate' for velocity
+		var amp = Latch.kr(gate, gate).linlin(0, 1, 0.05, 0.25);
 
-	var freqs = Lag.kr(freq, freqlag) * [1, detun];
+		var subFreq = freq / 2;
 
-	var filtEg = EnvGen.kr(Env([ffreqMul, ffreqMul, 1], [0, ffreqDcy], \exp), gate);
-	var eg = EnvGen.kr(Env.adsr(atk, dcy, sus, rel), gate, doneAction: 2);
+		/*var freqs = Lag.kr(freq, freqlag) * [1, detun];*/
+		var freqs = Lag.kr(freq * 2, freqlag);
+		var subFreqs = Lag.kr(subFreq, freqlag);
 
-	var sig = SinOsc.ar(freqs).sum;
+		var filtEg = EnvGen.kr(Env([ffreqMul, ffreqMul, 1], [0, ffreqDcy], \exp), gate);
+		var eg = EnvGen.kr(Env.adsr(atk, dcy, sus, rel), gate, doneAction: 2);
 
-	sig = RLPF.ar(sig, (ffreq * filtEg).clip(20, 20000), rq);
+		/*var sig = SinOsc.ar(freqs).sum;*/
+		var sig = SinOsc.ar(freqs);
+		var sub = SinOsc.ar(subFreqs,mul:0.3);
 
-	Out.ar(out, Pan2.ar(sig, pan, amp * eg));
-});
+		sig = sig + sub;
+
+		sig = RLPF.ar(sig, (ffreq * filtEg).clip(20, 20000), rq);
+
+		Out.ar(out, Pan2.ar(sig, pan, amp * eg));
+	});
 
 
 	// Receives and returns filepath from Python.
@@ -144,19 +152,28 @@ Routine({
 		v = MonoPortaVoicer(1, \valerie);
 		v.portaTime = 0.15;
 		Routine({
-			var dur, pitch;
+			var dur, pitch, pitches;
+
 			// Add a short silence before each recording.
 			0.15.wait;
+
+			pitches = List();
+
 			while{
 				dur = r.next;
 				pitch = p.next;
 				dur.notNil;
 			} {
-				arg i;
 				v.trigger(pitch,dur);
+				pitches.addFirst(pitch);
 				dur.wait;
-				v.release(pitch);
-			}
+			};
+
+			for(0,pitches.size){
+				arg i;
+				v.release(pitches[i]);
+			};
+
 		}).play;
 
 	}, "/generate");

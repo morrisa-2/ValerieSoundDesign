@@ -8,10 +8,11 @@ Invariant:
     but not the VariationGen that produced it.
 """
 import random
-import src.main.ValConstants as v
+import src.main.ValConstants as vc
 import src.main.ValUtil as vu
 import src.main.Note as Note
 import src.main.Intents.Intent as Intent
+from src.main.Rhythm import Rhythm
 
 class Variation:
 
@@ -137,7 +138,7 @@ class Variation:
 
         for i in range(0,length):
             note = applyTo[i]
-            duration = self.rhythm[i]
+            duration = Rhythm(self.rhythm).getAt(i)
             name = note.getName()
             octave = note.getOctave()
             copy = Note.Note(noteName=name,octave=octave,rhythVal=duration)
@@ -213,10 +214,10 @@ class Variation:
         topOut = current not in availableNotes[-turnAroundRange:]
         bottomOut = current not in availableNotes[:turnAroundRange]
         currentIndex = availableNotes.index(current)
-        if(contour == v.ASCENDING and not topOut):
+        if(contour == vc.ASCENDING and not topOut):
             higherThanCurrent = random.choice(availableNotes[currentIndex:])
             addTo.append(higherThanCurrent)
-        elif(contour == v.DESCENDING and not bottomOut):
+        elif(contour == vc.DESCENDING and not bottomOut):
             lowerThanCurrent = random.choice(availableNotes[:currentIndex])
             addTo.append(lowerThanCurrent)
         else:
@@ -340,11 +341,11 @@ class Variation:
         self._validateListOfNotes(availableNotes)
         toReturn = []
         contour = self.intent.getContour()
-        if (contour == v.DESCENDING):
+        if (contour == vc.DESCENDING):
             upperHalf = availableNotes[len(availableNotes)/2:]
             randNote = random.choice(upperHalf)
             toReturn.append(randNote)
-        elif (contour == v.ASCENDING):
+        elif (contour == vc.ASCENDING):
             lowerHalf = availableNotes[:len(availableNotes) / 2]
             randNote = random.choice(lowerHalf)
             toReturn.append(randNote)

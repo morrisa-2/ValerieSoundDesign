@@ -3,6 +3,7 @@ Model of the speech intent 'query'.
 '''
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
+from src.main.Rhythm import Rhythm
 from src.main.Intents.Intent import Intent
 
 class Query(Intent):
@@ -14,7 +15,7 @@ class Query(Intent):
         self.mode = vc.AEOLIAN
         self.contour = vc.ASCENDING
         self.tempo = vc.FAST
-        self.rhythm = [vc.EIGHTH, vc.HALF]
+        self.rhythm = Rhythm([vc.EIGHTH, vc.HALF])
         self.length = 2
         self.key = "E"
         self.interval = vc.MAJ2ND

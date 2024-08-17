@@ -3,6 +3,7 @@ Model of the speech intent 'alert'.
 '''
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
+from src.main.Rhythm import Rhythm
 from src.main.Intents.Intent import Intent
 
 class Alert(Intent):
@@ -14,7 +15,7 @@ class Alert(Intent):
         self.mode = vc.LYDIAN
         self.contour = vc.DESCENDING
         self.tempo = vc.MODERATE
-        self.rhythm = [vc.HALFSTEP, vc.HALFSTEP]
+        self.rhythm = Rhythm([vc.HALFSTEP, vc.HALFSTEP])
         self.length = 2
         self.key = "C"
         self.interval = vc.TRI

@@ -3,6 +3,7 @@ Model of the speech intent 'hello'.
 '''
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
+from src.main.Rhythm import Rhythm
 from src.main.Intents.Intent import Intent
 class Hello(Intent):
 
@@ -14,7 +15,7 @@ class Hello(Intent):
         self.mode = vc.IONIAN
         self.contour = vc.BOTH
         self.tempo = vc.FAST
-        self.rhythm = [vc.HALFSTEP, vc.HALFSTEP]
+        self.rhythm = Rhythm([vc.HALFSTEP, vc.HALFSTEP])
         self.length = 2
         self.key = "D"
         self.interval = vc.MAJ3RD

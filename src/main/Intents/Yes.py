@@ -4,6 +4,7 @@ Model of the speech intent 'yes'.
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
+from src.main.Rhythm import Rhythm
 
 class Yes(Intent):
     def __init__(self):
@@ -14,7 +15,7 @@ class Yes(Intent):
         self.mode = vc.IONIAN
         self.contour = vc.ASCENDING
         self.tempo = vc.FAST
-        self.rhythm = [vc.EIGHTH, vc.HALFSTEP]
+        self.rhythm = Rhythm([vc.EIGHTH, vc.HALFSTEP])
         self.length = 2
         self.key = "G"
         self.interval = vc.P4

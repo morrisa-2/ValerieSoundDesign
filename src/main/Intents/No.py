@@ -4,6 +4,7 @@ Model of the speech intent 'no'.
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
+from src.main.Rhythm import Rhythm
 
 class No(Intent):
     def __init__(self):
@@ -14,7 +15,7 @@ class No(Intent):
         self.mode = vc.AEOLIAN
         self.contour = vc.DESCENDING
         self.tempo = vc.FAST
-        self.rhythm =  [vc.EIGHTH, vc.EIGHTH, vc.HALF]
+        self.rhythm = Rhythm([vc.EIGHTH, vc.EIGHTH, vc.HALF])
         self.length = 3
         self.key = "C"
         self.interval = vc.MIN2ND

@@ -4,6 +4,7 @@ Model of the speech intent 'thank you'.
 import src.main.ValConstants as vc
 import src.main.ValUtil as vu
 from src.main.Intents.Intent import Intent
+from src.main.Rhythm import Rhythm
 
 class ThankYou(Intent):
     def __init__(self):
@@ -14,7 +15,7 @@ class ThankYou(Intent):
         self.mode = vc.IONIAN
         self.contour = vc.DESCENDING
         self.tempo = vc.SLOW
-        self.rhythm = [vc.HALF, vc.EIGHTH, vc.HALF]
+        self.rhythm = Rhythm([vc.HALF, vc.EIGHTH, vc.HALF])
         self.length = 3
         self.key = "A#"
         self.interval = vc.MAJ2ND
