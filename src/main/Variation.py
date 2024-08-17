@@ -138,7 +138,7 @@ class Variation:
 
         for i in range(0,length):
             note = applyTo[i]
-            duration = Rhythm(self.rhythm).getAt(i)
+            duration = self.rhythm.getAt(i)
             name = note.getName()
             octave = note.getOctave()
             copy = Note.Note(noteName=name,octave=octave,rhythVal=duration)
