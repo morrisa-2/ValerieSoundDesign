@@ -10,8 +10,8 @@ Invariant:
 import random
 import src.main.Python.Model.ValConstants as vc
 import src.main.Python.Model.ValUtil as vu
-import src.main.Python.Model.Note as Note
-import src.main.Intents.Intent as Intent
+from src.main.Python.Model.Note import Note
+from src.main.Python.Model.Intent import Intent
 
 
 class Variation:
@@ -22,7 +22,7 @@ class Variation:
         :param intent: Intent to generate variation of.
         Must be an Intent object or a child of Intent.
         """
-        if not (isinstance(intent,Intent.Intent)):
+        if not (isinstance(intent,Intent)):
             raise TypeError("Intent parameter must be an Intent object.")
         else:
             self.intent = intent
@@ -46,7 +46,7 @@ class Variation:
         :return: True if the given note is within range,
         false otherwise.
         """
-        if not (isinstance(note,note.Note)):
+        if not (isinstance(note,Note)):
             raise TypeError("Please input an Note object.")
         else:
             intent = self.getIntent()
@@ -141,7 +141,7 @@ class Variation:
             duration = self.rhythm.getAt(i)
             name = note.getName()
             octave = note.getOctave()
-            copy = Note.Note(noteName=name, octave=octave, rhythVal=duration)
+            copy = Note(noteName=name, octave=octave, rhythVal=duration)
             toReturn.append(copy)
 
         return toReturn
@@ -191,7 +191,7 @@ class Variation:
         any values that are not of the note class.
         :param toVal: List of objects to validate.
         """
-        if not all(isinstance(notes, Note.Note) for notes in toVal):
+        if not all(isinstance(notes, Note) for notes in toVal):
             raise TypeError("All elements in the given list must be of the Note class.")
 
     # Passing toAdd into and out of these selection functions
@@ -246,7 +246,7 @@ class Variation:
         desiredInterval = self.getIntent().getInterval()
         pickBetween = []
         for note in availableNotes:
-            interval = note.centralInterval(current)
+            interval = note.interval(current)
             if (abs(interval) == desiredInterval):
                 pickBetween.append(note)
 
@@ -325,7 +325,7 @@ class Variation:
         """
         centralName = self.getIntent().getCentralNote()
         centralOct = self.getIntent().getCentralOctave()
-        central = Note.Note(noteName=centralName, octave=centralOct)
+        central = Note(noteName=centralName, octave=centralOct)
         addTo.append(central)
         return addTo
 

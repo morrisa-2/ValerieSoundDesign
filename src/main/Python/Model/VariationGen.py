@@ -8,13 +8,13 @@ Invariant:
  -  The "connection" instance variable
  -  Any number of variations can be produced for each intent through the generate() function.
 """
-import src.main.Python.Model.Variation as Variation
+from src.main.Python.Model.Variation import Variation
 from src.main.Python.Controllers import SCConnection
-import src.main.Intents.Intent as Intent
+from src.main.Python.Model.Intent import Intent
 
 class VariationGen:
     def __init__(self,intent):
-        if not (isinstance(intent,Intent.Intent)):
+        if not (isinstance(intent,Intent)):
             raise TypeError("Intent argument must be an Intent object.")
         else:
             self.intent = intent
@@ -26,7 +26,7 @@ class VariationGen:
         given Intent object.
         :param intent: Intent to produce variations of.
         """
-        if not (isinstance(intent,Intent.Intent)):
+        if not (isinstance(intent,Intent)):
             raise TypeError("Intent argument must be an Intent object.")
         else:
             self.intent = intent
@@ -41,7 +41,7 @@ class VariationGen:
         :param filepath: Path to the directory in
         which to store the generated wav file.
         """
-        var = Variation.Variation(self.intent)
+        var = Variation(self.intent)
         self.connection.exportVariation(var,ordinal,filepath)
 
     def generate(self,numberToGen,filepath):

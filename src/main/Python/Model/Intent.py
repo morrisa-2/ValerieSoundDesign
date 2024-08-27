@@ -69,6 +69,7 @@ class Intent:
             # Assigns rhythm info fetched from DB
             self.rhythmLength = rhythmInfo["rhythmLength"]
 
+            # THIS WILL BREAK
             rhythm = []
             for i in range(self.rhythmLength):
                 toAdd = rhythmInfo["dur{num}".format(num=i)]
@@ -78,8 +79,10 @@ class Intent:
 
     # Getters
     def getCentralNote(self):
+        # Get note name from pitch
         return self.centralNote
     def getCentralOctave(self):
+        # Get octave from pitch
         return self.centralOctave
     def getPitchRange(self):
         return self.pitchRange

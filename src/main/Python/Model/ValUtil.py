@@ -1,12 +1,14 @@
 import random
 import src.main.Python.Model.ValConstants as vc
 import src.main.Python.Model.Note as Note
-import src.main.Intents.Intent as Intent
+from src.main.Python.Model.Intent import Intent
 
 """
 Handles all interactions between elements of ValConstants and
 the rest of the classes in this project.
 """
+
+# TODO: Fix what new model classes break here.
 
 def interval(note1, note2):
     """
@@ -26,9 +28,12 @@ def interval(note1, note2):
         octave1 = note1.getOctave()
         octave2 = note2.getOctave()
         octDifference = octave2 - octave1
+
+        # Relying on the indices feels kind of icky...
         index1 = _getNoteIndex(note1.getName(),vc.NOTES)
         index2 = _getNoteIndex(note2.getName(),vc.NOTES)
         indexDifference = index2 - index1
+
         return (12 * octDifference) + indexDifference
 
 def validateNoteName(noteName):
@@ -96,7 +101,7 @@ def _getNotesInRange(intent):
     :return: A list of note names in the given intent's range.
     Ex. 
     """
-    if not (isinstance(intent,Intent.Intent)):
+    if not (isinstance(intent,Intent)):
         raise TypeError("Please input an Intent object.")
     else:
         toReturn = []
@@ -175,7 +180,7 @@ def _filterByKey(intent):
     :param intent: Intent that this range is to be applied to.
     :return: A tuple of note names that are within the given intent's key.
     """
-    if not (isinstance(intent,Intent.Intent)):
+    if not (isinstance(intent,Intent)):
         raise TypeError("Please input an Intent object.")
     else:
         keyCenter = intent.getKey()
@@ -190,6 +195,7 @@ def _filterByKey(intent):
         # Fill with all notes in key above key center.
         while counter < pitchRange:
             current = toReturn[-1]
+            # CHANGE FOR MODE CLASS
             steps = mode[i]
             nextNote = _stepBy(steps,keyCenter,current)
             toReturn.append(nextNote)
@@ -203,6 +209,7 @@ def _filterByKey(intent):
         counter = 0
         while counter < pitchRange:
             current = toReturn[0]
+            # CHANGE FOR MODE CLASS
             steps = -mode[i]
             nextNote = _stepBy(steps,keyCenter,current)
             toReturn.insert(0,nextNote)
@@ -214,7 +221,7 @@ def _filterByKey(intent):
         return toReturn
 
 
-def _stepBy(steps,key,startingNote):
+def _stepBy(steps, key, startingNoteName):
     """
     Step through vc.NOTES by the given amount of semitones from the
     starting note and return the note within the given key at that position.
@@ -222,12 +229,12 @@ def _stepBy(steps,key,startingNote):
     :param steps: Number of semitones to step by; negative integers indicate
     steps down from the starting note and vice versa.
     :param key: Key to filter notes by, as a note name on the circle of fifths.
-    :param startingNote: Note name to step from.
+    :param startingNoteName: Note name to step from.
     :return: The note name at the position n steps away from starting note
     in vc.NOTES where n = steps argument. This note name must be in the
     specified key.
     """
-    startingIndex = _getNoteIndex(startingNote,vc.NOTES)
+    startingIndex = _getNoteIndex(startingNoteName, vc.NOTES)
     if (startingIndex == -1):
         raise Exception("startingNote not in vc.NOTES.")
     else:

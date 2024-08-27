@@ -12,11 +12,14 @@ import src.main.Python.Model.ValUtil as vu
 class Note:
 
     def __init__(self,noteName="C",octave=4,rhythVal=vc.QUARTER):
+        # Change to instantiating pitch
         if vu.validateNoteName(noteName):
             self.noteName = noteName
         else:
             self.noteName = "C"
+        # Check for octave in range
         self.octave = octave
+
         self.rhythVal = float(rhythVal)
         self.MIDI = vu.MIDIFromNote(self.noteName, self.octave)
         self.freq = self._nameToFreq()
@@ -54,12 +57,15 @@ class Note:
         return vu.interval(self,other)
 
     def getName(self):
+        # Change
         """
         :return: Pitch of this note, or note name and octave,
         as a string.
         Ex. "A5", "F#3", "Gb7"
         """
         return self.noteName
+
+    # Add getNote()
 
     def getMIDI(self):
         """
@@ -75,6 +81,7 @@ class Note:
         return self.freq
 
     def getOctave(self):
+        # Change
         """
         :return: Octave of this note as an int.
         """
@@ -87,6 +94,8 @@ class Note:
         return self.rhythVal
 
     def overlap(self, other):
+        # Adjust when moving other functions to Pitch
+        # Also check if other is a note object
         """
         Determines whether this note overlaps with the given
         note in pitch.
@@ -100,6 +109,7 @@ class Note:
             return self._enharmonic(other)
 
     def _distanceFrom(self, other):
+        # Move to Pitch
         """
         Determines how many steps are between this note and the given note.
         This does not account for octave or accidental,
@@ -133,6 +143,7 @@ class Note:
                 return ord(otherNoAcc) - ord(thisNoAcc)
 
     def _enharmonicExceptions(self, other):
+        # Move to Pitch
         """
         Helper function that handles edge cases for determining
         whether two notes are enharmonic equivalents.
@@ -158,6 +169,7 @@ class Note:
             return False
 
     def _enharmonic(self, other):
+        # Move to Pitch
         """
         Determines whether this note is an enharmonic
         spelling of the given note, i.e. if the two are
@@ -199,6 +211,7 @@ class Note:
                         return thisFlat and otherSharp
 
     def _octaveEquivalence(self, other):
+        # Move to Pitch
         """
         Determines whether two notes are of the
         same octave, with edge cases for the transition
@@ -228,6 +241,7 @@ class Note:
 
 
     def _sameSpelling(self,other):
+        # Move to Pitch
         """
         Determines whether this note and the given note
         are the same spelling of the same pitch. Note that
