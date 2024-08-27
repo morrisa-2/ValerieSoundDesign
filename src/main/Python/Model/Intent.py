@@ -34,7 +34,6 @@ Brief explanation of qualities:
                 ascending.
 '''
 
-import src.main.Python.Model.ValConstants as vc
 import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Controllers.DBConnection import DBConnection
 
@@ -77,7 +76,6 @@ class Intent:
 
             self.rhythm = rhythm
 
-
     # Getters
     def getCentralNote(self):
         return self.centralNote
@@ -107,7 +105,7 @@ class Intent:
         :return: A string representing this intent.
         Ex. "Hello"
         """
-        return self.__class__.__name__
+        return self.name
 
     def getAvailableNotes(self):
         """
