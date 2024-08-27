@@ -8,8 +8,8 @@ Invariant:
  -  The "connection" instance variable
  -  Any number of variations can be produced for each intent through the generate() function.
 """
-import src.main.Variation as Variation
-import SCConnection
+import src.main.Python.Model.Variation as Variation
+from src.main.Python.Controllers import SCConnection
 import src.main.Intents.Intent as Intent
 
 class VariationGen:

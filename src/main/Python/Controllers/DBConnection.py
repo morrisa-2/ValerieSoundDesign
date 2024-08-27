@@ -72,7 +72,7 @@ class DBConnection:
 
     @staticmethod
     # IMPLEMENT
-    def _getRhythmByIntent(intentName):
+    def getRhythmByIntent(intentName):
         """
         Gets the rhythm associated with the given intent.
         Raises a ValueError if the given intent does not exist.

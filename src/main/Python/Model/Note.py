@@ -6,8 +6,8 @@ or tuning systems besides 12-TET. Can determine enharmonic
 equivalence, but only supports single accidentals.
 """
 
-import src.main.ValConstants as vc
-import src.main.ValUtil as vu
+import src.main.Python.Model.ValConstants as vc
+import src.main.Python.Model.ValUtil as vu
 
 class Note:
 

@@ -1,14 +1,14 @@
 import unittest
-import src.main.Note as Note
+import src.main.Python.Model.Note as Note
 
 class NoteTestCase(unittest.TestCase):
 
     def test_EnharmonicBasics(self):
         """Various test of determining enharmonic equivalence."""
-        C4 = Note.Note("C",octave=4)
-        Bs3 = Note.Note("B#",octave=3)
-        Ab3 = Note.Note("Ab",octave=3)
-        Gs3 = Note.Note("G#",octave=3)
+        C4 = Note.Note("C", octave=4)
+        Bs3 = Note.Note("B#", octave=3)
+        Ab3 = Note.Note("Ab", octave=3)
+        Gs3 = Note.Note("G#", octave=3)
 
         self.assertTrue(C4.overlap(C4),
                         "A note is enharmonically equivalent to itself.")

@@ -8,12 +8,15 @@ class Rhythm:
         """
         Non-default constructor.
         :param durations: Optional list of note durations. Each
-        element in the list must be numeric.
+        element in the list must be numeric and can be a maximum
+        of five notes long.
         """
         if durations is None:
             self.durations = []
         elif not isinstance(durations,list):
             raise TypeError("Durations parameter must be a list.")
+        elif len(durations) > 5:
+            raise Exception("Durations must be at most 5 notes long.")
         else:
             isNum = [isinstance(element,(float,int,complex)) for element in durations]
             if False in isNum:

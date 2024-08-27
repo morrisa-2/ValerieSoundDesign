@@ -34,22 +34,49 @@ Brief explanation of qualities:
                 ascending.
 '''
 
-import src.main.ValConstants as vc
-import src.main.ValUtil as vu
+import src.main.Python.Model.ValConstants as vc
+import src.main.Python.Model.ValUtil as vu
+from src.main.Python.Controllers.DBConnection import DBConnection
 
 class Intent:
     # Instance vars
-    def __init__(self):
-        self.centralNote = vc.DEFAULT_CENTER
-        self.centralOctave = vc.DEFAULT_OCTAVE
-        self.pitchRange = vc.DEFAULT_RANGE
-        self.mode = vc.DEFAULT_MODE
-        self.contour = vc.DEFAULT_CONTOUR
-        self.tempo = vc.DEFAULT_TEMPO
-        self.rhythm = vc.DEFAULT_RHYTHM
-        self.length = vc.DEFAULT_LENGTH
-        self.key = vc.DEFAULT_KEY
-        self.interval = vc.DEFAULT_INTERVAL
+    def __init__(self,name):
+        """
+        Non-default constructor.
+        :param name: Name of intent to model. Name must
+        already be present in the database.
+        """
+        validName = DBConnection.validateIntent(name)
+        if not validName:
+            raise ValueError("The given intent does not exist.")
+        else:
+            # Gets a dictionary of info from the DB
+            info = DBConnection.getIntentInfo(name)
+
+            # Assigns info fetched from DB
+            self.name = info["intentName"]
+            self.centralNote = info["centralNote"]
+            self.centralOctave = info["centralOctave"]
+            self.pitchRange = info["pitchRange"]
+            self.modality = info["modality"]
+            self.contour = info["contour"]
+            self.tempo = info["tempo"]
+            self.keyCenter = info["keyCenter"]
+            self.centralInterval = info["centralInterval"]
+
+            # Gets a dictionary of rhythm info from the DB
+            rhythmInfo = DBConnection.getRhythmByIntent(name)
+
+            # Assigns rhythm info fetched from DB
+            self.rhythmLength = rhythmInfo["rhythmLength"]
+
+            rhythm = []
+            for i in range(self.rhythmLength):
+                toAdd = rhythmInfo["dur{num}".format(num=i)]
+                rhythm.append(toAdd)
+
+            self.rhythm = rhythm
+
 
     # Getters
     def getCentralNote(self):
@@ -59,7 +86,7 @@ class Intent:
     def getPitchRange(self):
         return self.pitchRange
     def getMode(self):
-        return self.mode
+        return self.modality
     def getContour(self):
         return self.contour
     def getTempo(self):
@@ -67,11 +94,11 @@ class Intent:
     def getRhythm(self):
         return self.rhythm
     def getLength(self):
-        return self.length
+        return self.rhythmLength
     def getKey(self):
-        return self.key
+        return self.keyCenter
     def getInterval(self):
-        return self.interval
+        return self.centralInterval
 
     def __str__(self):
         """

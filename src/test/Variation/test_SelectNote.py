@@ -1,6 +1,5 @@
 import unittest
-import src.main.ValConstants as val
-import src.main.Variation as var
+import src.main.Python.Model.Variation as var
 import src.main.Intents.Intent as intent
 
 class SelectNoteTestCase(unittest.TestCase):

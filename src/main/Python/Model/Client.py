@@ -3,11 +3,10 @@ Client for testing generation and export.
 """
 
 from VariationGen import VariationGen
-from Controllers.DBConnection import DBConnection
-from Intents import *
+from Intent import Intent
 
 def main():
-    vargen = VariationGen(Hello.Hello())
+    vargen = VariationGen(Intent("Hello"))
     path = "/Users/Aspen/PycharmProjects/ValSoundDesign/generated/"
     vargen.generate(1,path)
 

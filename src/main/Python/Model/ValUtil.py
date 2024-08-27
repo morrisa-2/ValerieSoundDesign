@@ -1,6 +1,6 @@
 import random
-import src.main.ValConstants as vc
-import src.main.Note as Note
+import src.main.Python.Model.ValConstants as vc
+import src.main.Python.Model.Note as Note
 import src.main.Intents.Intent as Intent
 
 """
@@ -18,8 +18,8 @@ def interval(note1, note2):
     :return: The distance in semitones between
     note1 and note2.
     """
-    n1IsNote = isinstance(note1,Note.Note)
-    n2IsNote = isinstance(note2,Note.Note)
+    n1IsNote = isinstance(note1, Note.Note)
+    n2IsNote = isinstance(note2, Note.Note)
     if not (n1IsNote or n2IsNote):
         raise TypeError("Please input two Note objects.")
     else:
@@ -131,7 +131,7 @@ def getNotes(intent):
     listOfOctaves = _applyOctave(listOfNoteNames,intent)
     length = len(listOfNoteNames)
     for i in range(0,length):
-        note = Note.Note(noteName=listOfNoteNames[i],octave=listOfOctaves[i])
+        note = Note.Note(noteName=listOfNoteNames[i], octave=listOfOctaves[i])
         toReturn.append(note)
     return tuple(toReturn)
 

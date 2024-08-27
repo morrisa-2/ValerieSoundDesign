@@ -4,7 +4,7 @@ the SCAMP and pythonosc modules.
 """
 
 from pythonosc.udp_client import SimpleUDPClient
-import src.main.Variation as Variation
+import src.main.Python.Model.Variation as Variation
 
 class SCConnection:
 
@@ -27,7 +27,7 @@ class SCConnection:
         Plays the given variation through the SuperCollider synth.
         :param variation: Variation to generate a signal for.
         """
-        if not (isinstance(variation,Variation.Variation)):
+        if not (isinstance(variation, Variation.Variation)):
             raise TypeError("Variation argument must be a Variation object.")
         else:
             # This will be an array of frequencies.

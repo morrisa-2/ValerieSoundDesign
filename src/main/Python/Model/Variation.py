@@ -8,11 +8,11 @@ Invariant:
     but not the VariationGen that produced it.
 """
 import random
-import src.main.ValConstants as vc
-import src.main.ValUtil as vu
-import src.main.Note as Note
+import src.main.Python.Model.ValConstants as vc
+import src.main.Python.Model.ValUtil as vu
+import src.main.Python.Model.Note as Note
 import src.main.Intents.Intent as Intent
-from src.main.Rhythm import Rhythm
+
 
 class Variation:
 
@@ -141,7 +141,7 @@ class Variation:
             duration = self.rhythm.getAt(i)
             name = note.getName()
             octave = note.getOctave()
-            copy = Note.Note(noteName=name,octave=octave,rhythVal=duration)
+            copy = Note.Note(noteName=name, octave=octave, rhythVal=duration)
             toReturn.append(copy)
 
         return toReturn
@@ -246,7 +246,7 @@ class Variation:
         desiredInterval = self.getIntent().getInterval()
         pickBetween = []
         for note in availableNotes:
-            interval = note.interval(current)
+            interval = note.centralInterval(current)
             if (abs(interval) == desiredInterval):
                 pickBetween.append(note)
 

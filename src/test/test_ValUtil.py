@@ -1,6 +1,6 @@
 import unittest
-import src.main.Note as Note
-import src.main.ValUtil as vu
+import src.main.Python.Model.Note as Note
+import src.main.Python.Model.ValUtil as vu
 import src.main.Intents.Intent as Intent
 
 class NoteTestCase(unittest.TestCase):
@@ -9,7 +9,7 @@ class NoteTestCase(unittest.TestCase):
         self.intent = Intent.Intent()
 
     def test_GetNotes(self):
-        F3 = Note.Note(noteName="F",octave=3)
+        F3 = Note.Note(noteName="F", octave=3)
         G3 = Note.Note(noteName="G", octave=3)
         A3 = Note.Note(noteName="A", octave=3)
         B3 = Note.Note(noteName="B", octave=3)
