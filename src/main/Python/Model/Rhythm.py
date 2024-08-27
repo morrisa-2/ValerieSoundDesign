@@ -26,7 +26,7 @@ class Rhythm:
                 self.durations = durations
 
     def __str__(self):
-        return " ".join(list(self.durations))
+        return " ".join([str(dur) for dur in self.durations])
 
     def __len__(self):
         return len(self.durations)
