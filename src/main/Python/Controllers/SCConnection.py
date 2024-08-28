@@ -30,9 +30,9 @@ class SCConnection:
         if not (isinstance(variation, Variation.Variation)):
             raise TypeError("Variation argument must be a Variation object.")
         else:
-            # This will be an array of frequencies.
+            # This will be a tuple of frequencies.
             pitches = variation.getFrequencies()
-            # This will be an array of note lengths.
+            # This will be a tuple of note lengths.
             rhythm = variation.getRhythm()
             tempo = variation.getTempo()
 

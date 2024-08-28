@@ -109,7 +109,7 @@ class DBConnection:
 
     @staticmethod
     # IMPLEMENT
-    def _addRhythm(args):
+    def addRhythm(args):
         """
         Adds a rhythm of the given parameters to the DB.
         Raises a ValueError if the given parameters are not
@@ -130,9 +130,10 @@ class DBConnection:
     # IMPLEMENT
     def getAllRhythms():
         """
-        Gets a matrix of all available rhythms from the DB.
-        :return: A 2D matrix containing every available rhythm
-        as arrays of floats.
+        Gets a dictionary representing all available rhythms from the DB.
+        :return: A dictionary that represent each rhythm in the DB,
+        keyed by intent name.
+        Ex. {"Hello": (1.0, 0.5, 1.0), "Goodbye": (2.0, 2.0)}
         """
         try:
             pass

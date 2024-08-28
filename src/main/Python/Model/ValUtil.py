@@ -1,8 +1,11 @@
 import random
+
 import src.main.Python.Model.ValConstants as vc
 from src.main.Python.Model.Rhythm import Rhythm
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Intent import Intent
+
+from src.main.Python.Controllers.DBConnection import DBConnection
 
 """
 Handles all interactions between elements of ValConstants and
@@ -11,7 +14,6 @@ the rest of the classes in this project.
 
 # TODO: Fix what new model classes break here.
 
-# TODO: Replace with Pitch
 def interval(pitch1, pitch2):
     """
     Returns the distance in semitones between the two given notes.
@@ -64,7 +66,6 @@ def validateNoteName(noteName):
     # If we've reached this point, the given note name is not valid.
     return False
 
-# TODO: Replace with Pitch
 def MIDIFromPitch(pitch):
     """
     Gets the MIDI number associated with the given note.
@@ -348,7 +349,7 @@ def _takeNatural(toPickFrom):
     else:
         return None
 
-def _getNoteIndex(noteName,list):
+def _getNoteIndex(noteName:str, toIndex:list):
     """
     Helper function that gets the index of a note name in
     ValConstants. Note that this does not specify between
@@ -356,16 +357,16 @@ def _getNoteIndex(noteName,list):
     index of the tuple containing the given note name if it
     is not its own element.
     :param noteName: Name of note to get the index of.
-    :param list: List to get noteName's position in.
+    :param toIndex: List to get noteName's position in.
     :return: The index of either the given note name in the given
     collection, or the tuple containing it; -1 if the given note
     name is not in list.
     """
     i = 0
     found = False
-    notesLength = len(list)
+    notesLength = len(toIndex)
     while (not found) and (i < notesLength):
-        element = list[i]
+        element = toIndex[i]
         if isinstance(element,tuple):
             if (noteName in element):
                 return i
@@ -380,21 +381,36 @@ def _getNoteIndex(noteName,list):
     # is not in ValConstants' list of notes.
     return -1
 
-def addRhythmToPool(rhythm):
+def populateRhythmPool():
+    """
+    Populates the rhythm pool in ValConstants with all rhythms
+    available in the database.
+    """
+    allDurs = DBConnection.getAllRhythms()
+    items = allDurs.items()
+    for item in items:
+        toAdd = Rhythm(item[0],item[1])
+        vc.RHYTHM_POOL.append(toAdd)
+
+def addRhythmToPool(rhythm:Rhythm):
     """
     Adds the given rhythm to the available pool of
-    rhythms for a variation to select from. Cannot add
-    duplicate rhythms.
-    :param rhythm: Ordered list of note durations.
-    :return: True if the given rhythm was successfully added
+    rhythms for a variation to select from, as well as
+    to the database. Cannot add duplicate rhythms.
+    :param rhythm: Rhythm to add.
+    :return: True if the given Rhythm was successfully added
     to the pool, false otherwise.
     """
-    pool = vc.RHYTHM_POOL
-    if rhythm in pool:
-        return False
+    if not isinstance(rhythm, Rhythm):
+        raise TypeError("Please input a Rhythm object.")
     else:
-        pool.append(rhythm)
-        return True
+        pool = vc.RHYTHM_POOL
+        if rhythm in pool:
+            return False
+        else:
+            DBConnection.addRhythm(rhythm)
+            pool.append(rhythm)
+            return True
 
 def pullRhythmFromPool():
     """

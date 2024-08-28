@@ -37,6 +37,7 @@ Brief explanation of qualities:
 import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Controllers.DBConnection import DBConnection
 from src.main.Python.Model.Pitch import Pitch
+from src.main.Python.Model.Rhythm import Rhythm
 
 class Intent:
     # Instance vars
@@ -73,11 +74,12 @@ class Intent:
             # Assigns rhythm info fetched from DB
             self.rhythmLength = rhythmInfo["rhythmLength"]
 
-            # THIS WILL BREAK
-            rhythm = []
+            durations = []
             for i in range(self.rhythmLength):
                 toAdd = rhythmInfo["dur{num}".format(num=i)]
-                rhythm.append(toAdd)
+                durations.append(toAdd)
+
+            rhythm = Rhythm(self.name,durations)
 
             self.rhythm = rhythm
 

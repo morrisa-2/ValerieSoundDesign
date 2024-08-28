@@ -37,7 +37,9 @@ class Variation:
         for note in self.contents:
             noteStr = str(note)
             toJoin.append(noteStr)
-        return "Notes: " + str.join(" ",toJoin) + "\n" + "Intent: " + str(self.getIntent())
+        return ("Notes: " + str.join(" ",toJoin) +
+                "\nRhythm: " + str(self.getRhythm()) +
+                "\nIntent: " + str(self.getIntent()))
 
     def getIntent(self):
         """
@@ -69,14 +71,13 @@ class Variation:
             pitchRange = intent.getPitchRange()
             return abs(interval) <= pitchRange
 
-    # TODO: Change for Rhythm class
     def lengthInSeconds(self):
         """
         Gets the length of this variation in seconds.
         :return: The length of this variation in seconds as an integer.
         """
         rhythm = self.getRhythm()
-        totalBeats = sum(rhythm)
+        totalBeats = sum(rhythm.getDurations())
         tempo = self.intent.getTempo()
         beatsPerSecond = tempo / 60
         return totalBeats / beatsPerSecond
@@ -100,26 +101,22 @@ class Variation:
         for i in range(1,length):
             pitches = self._conditionalSelection(availablePitches, pitches)
         notes = self._applyDurations(pitches)
-        return notes
+        return tuple(notes)
 
     def getMIDINotes(self):
         toReturn = []
         for note in self.contents:
             toReturn.append(note.getMIDI())
-        return toReturn
+        return tuple(toReturn)
 
     def getFrequencies(self):
         toReturn = []
         for note in self.contents:
             toReturn.append(note.getFreq())
-        return toReturn
+        return tuple(toReturn)
 
-    # TODO: Switch to Rhythm class.
     def getRhythm(self):
-        toReturn = []
-        for note in self.contents:
-            toReturn.append(note.getRhythVal())
-        return toReturn
+        return self.rhythm.getDurations()
 
     def _applyDurations(self, applyTo):
         """
