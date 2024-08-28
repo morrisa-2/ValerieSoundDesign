@@ -64,6 +64,7 @@ class Variation:
         else:
             intent = self.getIntent()
             centralNote = intent.getCentralPitch()
+
             interval = pitch.interval(centralNote)
             pitchRange = intent.getPitchRange()
             return abs(interval) <= pitchRange
@@ -93,7 +94,7 @@ class Variation:
         :return: An array of notes to be played
         and recorded for this variation.
         """
-        availablePitches = self._findAvailableNotes()
+        availablePitches = self._findAvailablePitches()
         pitches = self._start(availablePitches)
         length = len(self.rhythm)
         for i in range(1,length):
@@ -138,7 +139,7 @@ class Variation:
             duration = self.rhythm.getAt(i)
             name = pitch.getName()
             octave = pitch.getOctave()
-            note = Note(noteName=name, octave=octave, rhythVal=duration)
+            note = Note.fromName(noteName=name, octave=octave, rhythVal=duration)
             toReturn.append(note)
 
         return toReturn
@@ -158,18 +159,18 @@ class Variation:
 
     def _intervals(self, checkIntOf):
         """
-        Given a list of at least two notes, returns
+        Given a list of at least two pitches, returns
         a list containing the difference in semitones
-        between those notes in order. If checkIntOf
+        between those pitches in order. If checkIntOf
         has one note, returns an empty list. If checkIntOf
-        is empty or contains objects that are not of the Note class,
+        is empty or contains objects that are not of the Pitch class,
         raises an exception.
         Ex. checkIntOf = [C4,G4,D4];
         returns [7,-5]
-        :param checkIntOf: A list of Notes to check the
+        :param checkIntOf: A list of Pitches to check the
         intervals between.
-        :return: A list of the intervals between Notes in
-        checkIntOf; an empty list if checkIntOf has one note.
+        :return: A list of the intervals between Pitches in
+        checkIntOf; an empty list if checkIntOf has one Pitch.
         """
         toReturn = []
         i = 0
@@ -182,133 +183,167 @@ class Variation:
                 toReturn.append(vu.interval(note,next))
             return toReturn
 
-    def _validateListOfNotes(self,toVal):
+    def _validateListOfPitches(self,toVal):
         """
-        Helper functiont that raises an error if the given list contains
-        any values that are not of the note class.
+        Helper function that raises an error if the given list contains
+        any values that are not of the Pitch class.
         :param toVal: List of objects to validate.
         """
-        if not all(isinstance(notes, Note) for notes in toVal):
+        if not all(isinstance(pitch, Pitch) for pitch in toVal):
+            raise TypeError("All elements in the given list must be of the Pitch class.")
+
+    def _validateListOfNotes(self,toVal):
+        """
+        Helper function that raises an error if the given list contains
+        any values that are not of the Note class.
+        :param toVal: List of objects to validate.
+        """
+        if not all(isinstance(note, Note) for note in toVal):
             raise TypeError("All elements in the given list must be of the Note class.")
 
     # Passing toAdd into and out of these selection functions
     # feels weird, though I can't place why.
     # TODO: Consider alternatives to toAdd
-    def _selectOnContour(self, availableNotes, addTo):
+    def _selectOnContour(self, availablePitches, addTo):
         """
-        Select the next note in this sequence based on
+        Select the next pitch in this sequence based on
         the contour of this intent.
-        :param availableNotes: Notes to select from.
-        :param addTo: List to add the next note to.
+        :param availablePitches: Pitches to select from.
+        :param addTo: List to add the next pitch to.
         :return: toAdd with an additional note appended.
         """
         self._validateListOfNotes(addTo)
-        self._validateListOfNotes(availableNotes)
+        self._validateListOfNotes(availablePitches)
+
         intent = self.getIntent()
         contour = intent.getContour()
         turnAroundRange = 3
         current = addTo[-1]
-        topOut = current not in availableNotes[-turnAroundRange:]
-        bottomOut = current not in availableNotes[:turnAroundRange]
-        currentIndex = availableNotes.index(current)
+
+        # Setting ranges at which an ascending contour will stop looking for
+        # higher notes, and vice versa for descending.
+        topOut = current not in availablePitches[-turnAroundRange:]
+        bottomOut = current not in availablePitches[:turnAroundRange]
+        currentIndex = availablePitches.index(current)
+
+        # If contour is ascending and we're not in the warning range,
+        # pick a note at random above the current note.
         if(contour == vc.ASCENDING and not topOut):
-            higherThanCurrent = random.choice(availableNotes[currentIndex:])
+            higherThanCurrent = random.choice(availablePitches[currentIndex:])
             addTo.append(higherThanCurrent)
+
+        # Vice versa for descending
         elif(contour == vc.DESCENDING and not bottomOut):
-            lowerThanCurrent = random.choice(availableNotes[:currentIndex])
+            lowerThanCurrent = random.choice(availablePitches[:currentIndex])
             addTo.append(lowerThanCurrent)
+
+        # Pick a random note that isn't the current note.
         else:
-            anyButCurrent = random.choice(availableNotes)
+            anyButCurrent = random.choice(availablePitches)
             while(anyButCurrent == current):
-                anyButCurrent = random.choice(availableNotes)
+                anyButCurrent = random.choice(availablePitches)
             addTo.append(anyButCurrent)
         return addTo
 
-    def _selectOnInterval(self, availableNotes, addTo):
+    def _selectOnInterval(self, availablePitches, addTo):
         """
-        Select the next note in this sequence based on
+        Select the next Pitch in this sequence based on
         the interval of this intent. Selects direction of
         interval based on whether there is room in the range
-        of available notes, not contour. If there is no room
+        of available Pitches, not contour. If there is no room
         on either side, raises an index exception. If neither
-        note is in key, returns addTo as it was passed in originally.
-        :param availableNotes: Notes to select from.
-        :param addTo: List to add the next note to.
+        pitch is in key, returns addTo as it was passed in originally.
+        :param availablePitches: Pitch to select from.
+        :param addTo: List to add the next Pitch to.
         :return: addTo with an additional note appended.
         """
-        self._validateListOfNotes(addTo)
-        self._validateListOfNotes(availableNotes)
+        self._validateListOfPitches(addTo)
+        self._validateListOfPitches(availablePitches)
 
         current = addTo[-1]
         desiredInterval = self.getIntent().getInterval()
         pickBetween = []
-        for note in availableNotes:
-            interval = note.interval(current)
+        for pitch in availablePitches:
+            interval = pitch.interval(current)
             if (abs(interval) == desiredInterval):
-                pickBetween.append(note)
+                pickBetween.append(pitch)
 
         if (len(pickBetween) > 0):
             addTo.append(random.choice(pickBetween))
 
         return addTo
 
-    def _conditionalSelection(self, availableNotes, addTo):
+    def _conditionalSelection(self, availablePitches, addTo):
         """
-        Selection method based on the notes remaining in
-        this variation. If the central note has not yet
+        Selection method based on the Pitches remaining in
+        this variation. If the central Pitch has not yet
         been selected for this variation, the chance it
         is selected next is 1/x where x is the remaining
-        number of notes in the pattern. The same is true of
+        number of pitches in the pattern. The same is true of
         the intent's interval. If neither has been selected by
-        the final note and the central note cannot be reached by
-        that interval, one supersedes the other at random.
-        If both conditions are met, selects a new note based on
-        contour. Raises an exception if attempting to add beyond
-        the length of the intent.
+        the final Pitch and the central Pitch cannot be reached by
+        that interval, one supersedes the other based on the
+        _chooseToSupersede() function. If both conditions are met,
+        selects a new Pitch based on contour. Raises an exception
+        if attempting to add beyond the length of the intent.
 
-        :param availableNotes: Notes to select from.
-        :param addTo: List to add notes to.
+        :param availablePitches: Pitches to select from.
+        :param addTo: List to add Pitches to.
         :return: addTo with the selected note added.
         """
-        self._validateListOfNotes(addTo)
-        self._validateListOfNotes(availableNotes)
+        self._validateListOfPitches(addTo)
+        self._validateListOfPitches(availablePitches)
+
         intent = self.getIntent()
         intervals = self._intervals(addTo)
         intervalMissing = intent.getInterval() not in intervals
         centralMissing = intent.getCentralNote() not in addTo
 
-        # Below is going to break when rhythm system changes
-        notesRemaining = len(self.rhythm) - len(addTo)
+        pitchesRemaining = len(self.rhythm) - len(addTo)
 
-        if (notesRemaining <= 0):
+        if (pitchesRemaining <= 0):
             raise Exception("Cannot add notes beyond the length of this intent.")
         else:
-            if (notesRemaining == 1 and centralMissing and intervalMissing):
-                return self._chooseToSupersede(availableNotes, addTo)
+            if (pitchesRemaining == 1 and centralMissing and intervalMissing):
+                return self._chooseToSupersede(availablePitches, addTo)
             else:
-                randomByLength = random.randrange(notesRemaining)
+                # Pick a random number between 0 and the number of pitches remaining.
+                randomByLength = random.randrange(pitchesRemaining)
+
                 if (randomByLength == 0 and intervalMissing):
-                    return self._selectOnInterval(availableNotes, addTo)
+                    selectOnInt = self._selectOnInterval(availablePitches, addTo)
+
+                    # If the above worked, there will be another note in selectOnInt--
+                    # check its length against addTo.
+                    if len(selectOnInt) > len(addTo):
+                        return selectOnInt
+                    else:
+                        # Neither of the notes we could get from moving by this interval
+                        # are in range/key--just add by contour.
+                        return self._selectOnContour(availablePitches, addTo)
+
                 elif (randomByLength == 0 and centralMissing):
-                    addTo.append(self.intent.getCentralNote())
-                    return addTo
+                    return self._addCentral(addTo)
                 else:
-                    return self._selectOnContour(availableNotes, addTo)
+                    return self._selectOnContour(availablePitches, addTo)
 
     def _chooseToSupersede(self, availableNotes, addTo):
         """
         Helper function for conditional selection. Randomly
         chooses between selecting by interval or selecting
-        the central note.
+        the central Pitch.
         :param availableNotes: List of available notes.
-        :param addTo: List of notes to add selection to.
-        :return: addTo with the selected note appended.
+        :param addTo: List of Pitches to add selection to.
+        :return: addTo with the selected Pitch appended.
         """
         coinFlip = random.randrange(2)
         if (coinFlip == 0):
-            interval = self._selectOnInterval(availableNotes, addTo)
-            if len(interval) > len(addTo):
-                return interval
+            selectOnInt = self._selectOnInterval(availableNotes, addTo)
+
+            # If the above worked, there will be another note in selectOnInt--
+            # check its length against addTo.
+            if len(selectOnInt) > len(addTo):
+                return selectOnInt
             else:
                 return self._addCentral(addTo)
         else:
@@ -316,39 +351,38 @@ class Variation:
 
     def _addCentral(self,addTo):
         """
-        Adds the central note of this intent to the given list.
-        :param addTo: List of notes to add the central note to.
-        :return:
+        Adds the central Pitch of this intent to the given list.
+        :param addTo: List of Pitches to add the central Pitch to.
+        :return: addTo with the central Pitch of this intent added.
         """
-        centralName = self.getIntent().getCentralNote()
-        centralOct = self.getIntent().getCentralOctave()
-        central = Note(noteName=centralName, octave=centralOct)
+        central = self.getIntent().getCentralPitch()
         addTo.append(central)
         return addTo
 
-    def _start(self, availableNotes):
+    def _start(self, availablePitches):
         """
-        Selects the first note of this variation. Selection
-        is restrained to half of available notes based on contour.
+        Selects the first Pitch of this variation. Selection
+        is restrained to half of available Pitches based on contour.
         If the intent has a descending contour, only select the
-        central note or above, and vice versa.
-        :param availableNotes: List of notes this variation can select from.
-        :return: A list containing the first note of this variation.
+        central Pitch or above, and vice versa.
+        :param availablePitches: List of Pitches this variation can select from.
+        :return: A list containing the first Pitch of this variation.
         """
-        self._validateListOfNotes(availableNotes)
+        self._validateListOfPitches(availablePitches)
         toReturn = []
         contour = self.intent.getContour()
+
         if (contour == vc.DESCENDING):
-            upperHalf = availableNotes[len(availableNotes)/2:]
+            upperHalf = availablePitches[len(availablePitches) / 2:]
             randNote = random.choice(upperHalf)
             toReturn.append(randNote)
         elif (contour == vc.ASCENDING):
-            lowerHalf = availableNotes[:len(availableNotes) / 2]
+            lowerHalf = availablePitches[:len(availablePitches) / 2]
             randNote = random.choice(lowerHalf)
             toReturn.append(randNote)
         else:
-            toReturn.append(random.choice(availableNotes))
+            toReturn.append(random.choice(availablePitches))
         return toReturn
 
-    def _findAvailableNotes(self):
+    def _findAvailablePitches(self):
         return vu.getPitches(self.getIntent())

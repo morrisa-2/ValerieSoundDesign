@@ -31,6 +31,8 @@ class Rhythm:
     def __len__(self):
         return len(self.durations)
 
+    # TODO: Remove mutability methods
+
     def add(self, duration, position=None):
         """
         Adds the given duration to the given position in the rhythm,
