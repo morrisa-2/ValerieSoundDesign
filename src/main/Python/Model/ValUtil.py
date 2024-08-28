@@ -10,6 +10,7 @@ the rest of the classes in this project.
 
 # TODO: Fix what new model classes break here.
 
+# TODO: Replace with Pitch
 def interval(note1, note2):
     """
     Returns the distance in semitones between the two given notes.
@@ -62,6 +63,7 @@ def validateNoteName(noteName):
     # If we've reached this point, the given note name is not valid.
     return False
 
+# TODO: Replace with Pitch
 def MIDIFromNote(noteName,octave):
     """
     Gets the MIDI number associated with the given note.
@@ -99,7 +101,6 @@ def _getNotesInRange(intent):
     This does not select by key, only by octave.
     :param intent: Intent to get the range of.
     :return: A list of note names in the given intent's range.
-    Ex. 
     """
     if not (isinstance(intent,Intent)):
         raise TypeError("Please input an Intent object.")
@@ -123,6 +124,7 @@ def _getNotesInRange(intent):
             toReturn.insert(0,next)
         return toReturn
 
+# TODO: Replace with Pitch
 def getNotes(intent):
     """
     Returns a tuple of Note objects that can be selected for
@@ -372,7 +374,6 @@ def _getNoteIndex(noteName,list):
     # is not in ValConstants' list of notes.
     return -1
 
-# TODO: Change to Rhythm class.
 def addRhythmToPool(rhythm):
     """
     Adds the given rhythm to the available pool of
