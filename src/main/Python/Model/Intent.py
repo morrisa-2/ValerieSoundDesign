@@ -36,6 +36,7 @@ Brief explanation of qualities:
 
 import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Controllers.DBConnection import DBConnection
+from src.main.Python.Model.Pitch import Pitch
 
 class Intent:
     # Instance vars
@@ -54,8 +55,11 @@ class Intent:
 
             # Assigns info fetched from DB
             self.name = info["intentName"]
-            self.centralNote = info["centralNote"]
-            self.centralOctave = info["centralOctave"]
+
+            centralNote = info["centralNote"]
+            centralOctave = info["centralOctave"]
+            self.centralPitch = Pitch(centralNote,centralOctave)
+
             self.pitchRange = info["pitchRange"]
             self.modality = info["modality"]
             self.contour = info["contour"]
@@ -79,11 +83,9 @@ class Intent:
 
     # Getters
     def getCentralNote(self):
-        # Get note name from pitch
-        return self.centralNote
+        return self.centralPitch.getName()
     def getCentralOctave(self):
-        # Get octave from pitch
-        return self.centralOctave
+        return self.centralPitch.getOctave()
     def getPitchRange(self):
         return self.pitchRange
     def getMode(self):
@@ -110,7 +112,7 @@ class Intent:
         """
         return self.name
 
-    def getAvailableNotes(self):
+    def getAvailablePitches(self):
         """
         Gets a list of all the pitches that this intent
         can play.
