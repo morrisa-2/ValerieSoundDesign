@@ -19,6 +19,6 @@ class NoteTestCase(unittest.TestCase):
         F4 = Note.Note(noteName="F", octave=4)
         G4 = Note.Note(noteName="G", octave=4)
         expected = (F3,G3,A3,B3,C4,D4,E4,F4,G4)
-        actual = vu.getNotes(self.intent)
+        actual = vu.getPitches(self.intent)
         self.assertEqual(expected,actual,
                          "Gets a list of Notes that express this Intent's range.")

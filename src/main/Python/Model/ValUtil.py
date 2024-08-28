@@ -131,7 +131,7 @@ def _getNotesInRange(intent):
             toReturn.insert(0,next)
         return toReturn
 
-def getNotes(intent):
+def getPitches(intent):
     """
     Returns a tuple of Note objects that can be selected for
     Variations of the given Intent.

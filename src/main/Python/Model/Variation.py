@@ -354,4 +354,4 @@ class Variation:
         return toReturn
 
     def _findAvailableNotes(self):
-        return vu.getNotes(self.getIntent())
+        return vu.getPitches(self.getIntent())

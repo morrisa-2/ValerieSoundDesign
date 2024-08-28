@@ -119,4 +119,4 @@ class Intent:
         :return: A tuple containing Note objects that
         represent this Intent's range of available pitches.
         """
-        return vu.getNotes(self)
+        return vu.getPitches(self)
