@@ -1,6 +1,7 @@
 import random
 import src.main.Python.Model.ValConstants as vc
-import src.main.Python.Model.Note as Note
+from src.main.Python.Model.Rhythm import Rhythm
+from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Intent import Intent
 
 """
@@ -11,28 +12,28 @@ the rest of the classes in this project.
 # TODO: Fix what new model classes break here.
 
 # TODO: Replace with Pitch
-def interval(note1, note2):
+def interval(pitch1, pitch2):
     """
     Returns the distance in semitones between the two given notes.
     Negative values indicate a drop in pitch.
-    :param note1: Starting note. Must be a valid Note object
+    :param pitch1: Starting note. Must be a valid Note object
     whose pitch is within the range C-1 - G9
-    :param note2: Note to approach.
+    :param pitch2: Note to approach.
     :return: The distance in semitones between
     note1 and note2.
     """
-    n1IsNote = isinstance(note1, Note.Note)
-    n2IsNote = isinstance(note2, Note.Note)
-    if not (n1IsNote or n2IsNote):
+    isPitch1 = isinstance(pitch1, Pitch)
+    isPitch2 = isinstance(pitch2, Pitch)
+    if not (isPitch1 or isPitch2):
         raise TypeError("Please input two Note objects.")
     else:
-        octave1 = note1.getOctave()
-        octave2 = note2.getOctave()
+        octave1 = pitch1.getOctave()
+        octave2 = pitch2.getOctave()
         octDifference = octave2 - octave1
 
         # Relying on the indices feels kind of icky...
-        index1 = _getNoteIndex(note1.getName(),vc.NOTES)
-        index2 = _getNoteIndex(note2.getName(),vc.NOTES)
+        index1 = _getNoteIndex(pitch1.getName(), vc.NOTES)
+        index2 = _getNoteIndex(pitch2.getName(), vc.NOTES)
         indexDifference = index2 - index1
 
         return (12 * octDifference) + indexDifference
@@ -64,7 +65,7 @@ def validateNoteName(noteName):
     return False
 
 # TODO: Replace with Pitch
-def MIDIFromNote(noteName,octave):
+def MIDIFromPitch(pitch):
     """
     Gets the MIDI number associated with the given note.
     :param noteName: Note name to get MIDI number of, as a
@@ -76,23 +77,29 @@ def MIDIFromNote(noteName,octave):
     :return: An integer between 0-127, or -1 if the
     given note is not recognized
     """
-    i = 0
-    found = False
-    notesLength = len(vc.NOTES)
-    while (not found) and (i < notesLength):
-        item = vc.NOTES[i]
-        isTuple = isinstance(item, tuple)
-        if isTuple:
-            if noteName in item:
-                found = True
-                return i + (12 * (1 + octave))
-        else:
-            if noteName == item:
-                found = True
-                return i + (12 * (1 + octave))
-        i += 1
-    # If we've reached this point, the given note name is not valid.
-    return -1
+    if not isinstance(pitch, Pitch):
+        raise TypeError("Please input a Pitch object.")
+    else:
+        name = pitch.getName()
+        octave = pitch.getOctave()
+
+        i = 0
+        found = False
+        notesLength = len(vc.NOTES)
+        while (not found) and (i < notesLength):
+            item = vc.NOTES[i]
+            isTuple = isinstance(item, tuple)
+            if isTuple:
+                if name in item:
+                    found = True
+                    return i + (12 * (1 + octave))
+            else:
+                if name == item:
+                    found = True
+                    return i + (12 * (1 + octave))
+            i += 1
+        # If we've reached this point, the given note name is not valid.
+        return -1
 
 def _getNotesInRange(intent):
     """
@@ -124,7 +131,6 @@ def _getNotesInRange(intent):
             toReturn.insert(0,next)
         return toReturn
 
-# TODO: Replace with Pitch
 def getNotes(intent):
     """
     Returns a tuple of Note objects that can be selected for
@@ -138,8 +144,8 @@ def getNotes(intent):
     listOfOctaves = _applyOctave(listOfNoteNames,intent)
     length = len(listOfNoteNames)
     for i in range(0,length):
-        note = Note.Note(noteName=listOfNoteNames[i], octave=listOfOctaves[i])
-        toReturn.append(note)
+        pitch = Pitch(name=listOfNoteNames[i], octave=listOfOctaves[i])
+        toReturn.append(pitch)
     return tuple(toReturn)
 
 def _applyOctave(listOfNoteNames,intent):
