@@ -1,16 +1,11 @@
 """
 Models a single variation produced by the VariationGen class.
-
-Invariant:
- -  The Variation refers to a String which is formatted based on Gensound's
-    melodic shorthand notation.
- -  A Variation also has reference to the Intent from which it was generated,
-    but not the VariationGen that produced it.
 """
 import random
 import src.main.Python.Model.ValConstants as vc
 import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Model.Note import Note
+from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Intent import Intent
 
 
@@ -20,40 +15,14 @@ class Variation:
         """
         Non-default constructor.
         :param intent: Intent to generate variation of.
-        Must be an Intent object or a child of Intent.
+        Must be an Intent object.
         """
         if not (isinstance(intent,Intent)):
-            raise TypeError("Intent parameter must be an Intent object.")
+            raise TypeError("Please input an an Intent object.")
         else:
             self.intent = intent
             self.rhythm = self._pickRhythm()
             self.contents = self._populate()
-
-    def getIntent(self):
-        """
-        :return: This Variation's Intent.
-        """
-        return self.intent
-
-    def getTempo(self):
-        return self.getIntent().getTempo()
-
-    def _inRange(self,note):
-        """
-        Determines whether the given note is in the range
-        of this variation.
-        :param note: Note to check.
-        :return: True if the given note is within range,
-        false otherwise.
-        """
-        if not (isinstance(note,Note)):
-            raise TypeError("Please input an Note object.")
-        else:
-            intent = self.getIntent()
-            centralNote = intent.getCentralNote()
-            interval = vu.interval(note,centralNote)
-            pitchRange = intent.getPitchRange()
-            return abs(interval) <= pitchRange
 
     def __str__(self):
         """
@@ -70,7 +39,36 @@ class Variation:
             toJoin.append(noteStr)
         return "Notes: " + str.join(" ",toJoin) + "\n" + "Intent: " + str(self.getIntent())
 
+    def getIntent(self):
+        """
+        :return: This Variation's Intent.
+        """
+        return self.intent
 
+    def getTempo(self):
+        """
+        :return: This Variation's tempo as an int.
+        """
+        return self.getIntent().getTempo()
+
+    def _inRange(self, pitch):
+        """
+        Determines whether the given pitch is in the range
+        of this variation.
+        :param pitch: Pitch to check.
+        :return: True if the given note is within range,
+        false otherwise.
+        """
+        if not (isinstance(pitch, Pitch)):
+            raise TypeError("Please input a Pitch object.")
+        else:
+            intent = self.getIntent()
+            centralNote = intent.getCentralPitch()
+            interval = pitch.interval(centralNote)
+            pitchRange = intent.getPitchRange()
+            return abs(interval) <= pitchRange
+
+    # TODO: Change for Rhythm class
     def lengthInSeconds(self):
         """
         Gets the length of this variation in seconds.
@@ -95,12 +93,12 @@ class Variation:
         :return: An array of notes to be played
         and recorded for this variation.
         """
-        availableNotes = self._findAvailableNotes()
-        notes = self._start(availableNotes)
+        availablePitches = self._findAvailableNotes()
+        pitches = self._start(availablePitches)
         length = len(self.rhythm)
         for i in range(1,length):
-            notes = self._conditionalSelection(availableNotes, notes)
-        notes = self._applyDurations(notes)
+            pitches = self._conditionalSelection(availablePitches, pitches)
+        notes = self._applyDurations(pitches)
         return notes
 
     def getMIDINotes(self):
@@ -115,21 +113,20 @@ class Variation:
             toReturn.append(note.getFreq())
         return toReturn
 
+    # TODO: Switch to Rhythm class.
     def getRhythm(self):
         toReturn = []
         for note in self.contents:
             toReturn.append(note.getRhythVal())
         return toReturn
 
-    # TODO: Switch to Rhythm class.
     def _applyDurations(self, applyTo):
         """
-        Given a list of notes, applies the rhythm of this variation
-        to those notes.
-        :param rhythm: Ordered list of rhythm values to apply.
-        :param applyTo: List of notes to apply rhythms to.
-        :return: applyTo with each note's rhythmic value adjusted to
-        match the rhythm of this variation.
+        Given a list of pitches, applies the rhythm of this variation
+        to create a list of this Variation's notes.
+        :param applyTo: List of pitches to apply rhythms to.
+        :return: A list of Note objects with the desired
+        pitches and rhythmic values.
         """
         self._validateListOfNotes(applyTo)
 
@@ -137,12 +134,12 @@ class Variation:
         toReturn = []
 
         for i in range(0,length):
-            note = applyTo[i]
+            pitch = applyTo[i]
             duration = self.rhythm.getAt(i)
-            name = note.getName()
-            octave = note.getOctave()
-            copy = Note(noteName=name, octave=octave, rhythVal=duration)
-            toReturn.append(copy)
+            name = pitch.getName()
+            octave = pitch.getOctave()
+            note = Note(noteName=name, octave=octave, rhythVal=duration)
+            toReturn.append(note)
 
         return toReturn
 

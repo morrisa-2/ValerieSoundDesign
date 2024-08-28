@@ -25,7 +25,7 @@ def interval(pitch1, pitch2):
     isPitch1 = isinstance(pitch1, Pitch)
     isPitch2 = isinstance(pitch2, Pitch)
     if not (isPitch1 or isPitch2):
-        raise TypeError("Please input two Note objects.")
+        raise TypeError("Please input two Pitch objects.")
     else:
         octave1 = pitch1.getOctave()
         octave2 = pitch2.getOctave()
@@ -133,10 +133,10 @@ def _getNotesInRange(intent):
 
 def getPitches(intent):
     """
-    Returns a tuple of Note objects that can be selected for
+    Returns a tuple of Pitch objects that can be selected for
     Variations of the given Intent.
     :param intent: Intent to get the range of notes for.
-    :return: A tuple of Note objects that express the given
+    :return: A tuple of Pitch objects that express the given
     intent's range.
     """
     toReturn = []

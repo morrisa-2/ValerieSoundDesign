@@ -9,14 +9,53 @@ equivalence, but only supports single accidentals.
 import src.main.Python.Model.ValConstants as vc
 import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Model.Pitch import Pitch
+from typing import Self
 
 class Note:
 
-    def __init__(self,noteName="C",octave=4,rhythVal=vc.QUARTER):
-        self.pitch = Pitch(noteName,octave)
-        self.rhythVal = float(rhythVal)
+    def __init__(self, pitch, rhythVal:float):
+        """
+        Non-default constructor
+
+        :param rhythVal: The number of beats this note should
+        be played for as a float. Note that while there
+        are constants for more common durations such as a quarter
+        or eighth note, any numeric value will suffice.
+        """
+        self.pitch = pitch
+        self.rhythVal = rhythVal
+
+    @classmethod
+    def fromPitch(cls, pitch, rhythVal:float) -> Self:
+        """
+        Constructs a new note given a Pitch object.
+        :param pitch: Pitch to provide this note with.
+        :param rhythVal: The number of beats this note should
+        be played for as a float.
+        :return: Note with the given pitch and rhythmic value.
+        """
+        return cls(pitch,rhythVal)
+
+    @classmethod
+    def fromName(cls, noteName:str, octave:int, rhythVal:float) -> Self:
+        """
+        Constructs a new note given a note name and octave.
+        :param noteName: Note name to give to the pitch of this note
+        Ex. "A", "Bb", "C#"
+        :param octave: Integer between the lower and upper octave
+        limits specified in ValConstants.
+        :param rhythVal: The number of beats this note should
+        be played for as a float.
+        :return: Note with the given pitch and rhythmic value.
+        """
+        pitch = Pitch(noteName,octave)
+        return cls(pitch,rhythVal)
 
     def __str__(self):
+        """
+        :return: A string representing this note.
+        Ex. "A5 1.0", "Bb7 0.5"
+        """
         return self.getName() + str(self.getOctave()) + " " + str(self.getRhythVal())
 
     def interval(self,other):
@@ -61,7 +100,6 @@ class Note:
         return self.pitch.getFreq()
 
     def getOctave(self):
-        # Change
         """
         :return: Octave of this note as an int.
         """

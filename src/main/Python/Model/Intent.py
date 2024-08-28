@@ -82,6 +82,8 @@ class Intent:
             self.rhythm = rhythm
 
     # Getters
+    def getCentralPitch(self):
+        return self.centralPitch
     def getCentralNote(self):
         return self.centralPitch.getName()
     def getCentralOctave(self):
