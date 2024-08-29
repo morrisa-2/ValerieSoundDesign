@@ -38,6 +38,7 @@ import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Controllers.DBConnection import DBConnection
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Rhythm import Rhythm
+from src.main.Python.Model.Contour import Contour
 
 class Intent:
     # Instance vars
@@ -63,7 +64,18 @@ class Intent:
 
             self.pitchRange = info["pitchRange"]
             self.modality = info["modality"]
-            self.contour = info["contour"]
+
+            # DB stores as string; check values of enum in Contour.
+            contourInfo = info["contour"]
+            for enum in Contour:
+                if enum.value == contourInfo:
+                    self.contour = enum
+
+            # If self.contour hasn't been populated yet, the string
+            # from the DB is not recognized by Contour.
+            if self.contour == None:
+                raise Exception("Unrecognized contour.")
+
             self.tempo = info["tempo"]
             self.keyCenter = info["keyCenter"]
             self.centralInterval = info["centralInterval"]
