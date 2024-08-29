@@ -12,8 +12,6 @@ Handles all interactions between elements of ValConstants and
 the rest of the classes in this project.
 """
 
-# TODO: Fix what new model classes break here.
-
 def interval(pitch1, pitch2):
     """
     Returns the distance in semitones between the two given notes.
@@ -204,7 +202,6 @@ def _filterByKey(intent):
         # Fill with all notes in key above key center.
         while counter < pitchRange:
             current = toReturn[-1]
-            # CHANGE FOR MODE CLASS
             steps = mode[i]
             nextNote = _stepBy(steps,keyCenter,current)
             toReturn.append(nextNote)
@@ -218,7 +215,6 @@ def _filterByKey(intent):
         counter = 0
         while counter < pitchRange:
             current = toReturn[0]
-            # CHANGE FOR MODE CLASS
             steps = -mode[i]
             nextNote = _stepBy(steps,keyCenter,current)
             toReturn.insert(0,nextNote)

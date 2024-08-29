@@ -36,6 +36,7 @@ Brief explanation of qualities:
 
 import src.main.Python.Model.ValUtil as vu
 from src.main.Python.Controllers.DBConnection import DBConnection
+from src.main.Python.Model.Modality import Modality, Modes
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Rhythm import Rhythm
 from src.main.Python.Model.Contour import Contour
@@ -63,10 +64,18 @@ class Intent:
             self.centralPitch = Pitch(centralNote,centralOctave)
 
             self.pitchRange = info["pitchRange"]
-            self.modality = info["modality"]
+
+            modeName = info["modality"].upper()
+            for enum in Modes:
+                if modeName in str(enum):
+                    self.modality = Modality(enum)
+
+            if self.modality == None:
+                raise Exception("Unrecognized modality.")
 
             # DB stores as string; check values of enum in Contour.
             contourInfo = info["contour"]
+
             for enum in Contour:
                 if enum.value == contourInfo:
                     self.contour = enum
