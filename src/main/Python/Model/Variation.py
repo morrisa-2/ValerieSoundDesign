@@ -2,8 +2,9 @@
 Models a single variation produced by the VariationGen class.
 """
 import random
-import src.main.Python.Model.ValConstants as vc
 import src.main.Python.Model.ValUtil as vu
+
+from src.main.Python.Model.Contour import Contour
 from src.main.Python.Model.Note import Note
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Intent import Intent
@@ -225,12 +226,12 @@ class Variation:
 
         # If contour is ascending and we're not in the warning range,
         # pick a note at random above the current note.
-        if(contour == vc.ASCENDING and not topOut):
+        if(contour == Contour.ASCENDING and not topOut):
             higherThanCurrent = random.choice(availablePitches[currentIndex:])
             addTo.append(higherThanCurrent)
 
         # Vice versa for descending
-        elif(contour == vc.DESCENDING and not bottomOut):
+        elif(contour == Contour.DESCENDING and not bottomOut):
             lowerThanCurrent = random.choice(availablePitches[:currentIndex])
             addTo.append(lowerThanCurrent)
 
@@ -369,11 +370,11 @@ class Variation:
         toReturn = []
         contour = self.intent.getContour()
 
-        if (contour == vc.DESCENDING):
+        if (contour == Contour.DESCENDING):
             upperHalf = availablePitches[len(availablePitches) / 2:]
             randNote = random.choice(upperHalf)
             toReturn.append(randNote)
-        elif (contour == vc.ASCENDING):
+        elif (contour == Contour.ASCENDING):
             lowerHalf = availablePitches[:len(availablePitches) / 2]
             randNote = random.choice(lowerHalf)
             toReturn.append(randNote)
