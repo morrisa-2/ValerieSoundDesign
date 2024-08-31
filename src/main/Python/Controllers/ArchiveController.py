@@ -33,6 +33,14 @@ class ArchiveController:
         """
 
     # IMPLEMENT
+    def getFileLocation(self, mouseEvent):
+        """
+
+        :param mouseEvent:
+        :return:
+        """
+
+    # IMPLEMENT
     def getAllFiles(self):
         """
         Gets a 2D matrix of all the files stored in the database, sorted by

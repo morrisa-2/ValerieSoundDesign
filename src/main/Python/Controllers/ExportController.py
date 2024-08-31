@@ -28,6 +28,13 @@ class ExportController:
         """
 
     # IMPLEMENT
+    def browseFiles(self):
+        """
+        Opens a file browser to select a directory to generate
+        new audio files at.
+        """
+
+    # IMPLEMENT
     def generate(self):
         """
         Generates a single variation on the selected intent as an
