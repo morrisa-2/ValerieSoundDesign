@@ -14,11 +14,8 @@ from src.main.Python.Model.Intent import Intent
 
 class VariationGen:
     def __init__(self,intent):
-        if not (isinstance(intent,Intent)):
-            raise TypeError("Intent argument must be an Intent object.")
-        else:
-            self.intent = intent
-            self.connection = SCConnection.SCConnection()
+        self.intent = intent
+        self.connection = SCConnection.SCConnection()
 
     def setIntent(self,intent):
         """

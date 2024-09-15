@@ -21,9 +21,7 @@ class Variation:
         prototypical or not. The qualities of a prototypical
         variation are outlined in _protoPopulate().
         """
-        if not (isinstance(intent,Intent)):
-            raise TypeError("Please input the intent parameter as an Intent object.")
-        elif not (isinstance(prototypical, (bool,type(None)))):
+        if not (isinstance(prototypical, (bool,type(None)))):
             raise TypeError("Please input the prototypical parameter as a a boolean.")
         else:
             self.intent = intent
