@@ -28,7 +28,7 @@ class VariationGen:
         else:
             self.intent = intent
 
-    def _generate(self,ordinal,filepath):
+    def _generate(self,ordinal,filepath,prototypical=False):
         """
         Generates a single variation of this intent
         as a wav file, saved to the given directory and
@@ -38,10 +38,10 @@ class VariationGen:
         :param filepath: Path to the directory in
         which to store the generated wav file.
         """
-        var = Variation(self.intent)
+        var = Variation(self.intent,prototypical)
         self.connection.exportVariation(var,ordinal,filepath)
 
-    def generate(self,numberToGen,filepath):
+    def generate(self,numberToGen,filepath,prototypical=False):
         """
         Generates the specified number of variations to the
         given filepath as wav files.
@@ -51,7 +51,7 @@ class VariationGen:
         """
         # TODO: Check validity of filepath
         for i in range(numberToGen):
-            self._generate(i,filepath)
+            self._generate(i,filepath,prototypical)
     def __str__(self):
         """
         Returns a string representation of this
