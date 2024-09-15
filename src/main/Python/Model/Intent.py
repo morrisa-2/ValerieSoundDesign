@@ -126,6 +126,8 @@ class Intent:
         self.rhythmLength = len(durations)
 
     # Getters
+    def getName(self):
+        return self.name
     def getCentralPitch(self):
         return self.centralPitch
     def getCentralNote(self):

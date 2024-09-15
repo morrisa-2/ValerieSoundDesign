@@ -181,43 +181,40 @@ def _filterByKey(intent):
     :param intent: Intent that this range is to be applied to.
     :return: A tuple of note names that are within the given intent's key.
     """
-    if not (isinstance(intent,Intent)):
-        raise TypeError("Please input an Intent object.")
-    else:
-        keyCenter = intent.getKey()
-        mode = intent.getMode()
-        pitchRange = intent.getPitchRange()
-        toReturn = []
-        toReturn.append(keyCenter)
-        counter = 0
-        i = 0
-        modeLen = len(mode)
+    keyCenter = intent.getKey()
+    mode = intent.getMode()
+    pitchRange = intent.getPitchRange()
+    toReturn = []
+    toReturn.append(keyCenter)
+    counter = 0
+    i = 0
+    modeLen = len(mode)
 
-        # Fill with all notes in key above key center.
-        while counter < pitchRange:
-            current = toReturn[-1]
-            steps = mode[i]
-            nextNote = _stepBy(steps,keyCenter,current)
-            toReturn.append(nextNote)
-            i += 1
-            counter += steps
-            if i >= modeLen:
-                i = 0
+    # Fill with all notes in key above key center.
+    while counter < pitchRange:
+        current = toReturn[-1]
+        steps = mode[i]
+        nextNote = _stepBy(steps,keyCenter,current)
+        toReturn.append(nextNote)
+        i += 1
+        counter += steps
+        if i >= modeLen:
+            i = 0
 
-        # Fill with all notes in key below key center.
-        i = modeLen - 1
-        counter = 0
-        while counter < pitchRange:
-            current = toReturn[0]
-            steps = -mode[i]
-            nextNote = _stepBy(steps,keyCenter,current)
-            toReturn.insert(0,nextNote)
-            i -= 1
-            counter += -steps
-            if i < 0:
-                i = modeLen - 1
+    # Fill with all notes in key below key center.
+    i = modeLen - 1
+    counter = 0
+    while counter < pitchRange:
+        current = toReturn[0]
+        steps = -mode[i]
+        nextNote = _stepBy(steps,keyCenter,current)
+        toReturn.insert(0,nextNote)
+        i -= 1
+        counter += -steps
+        if i < 0:
+            i = modeLen - 1
 
-        return toReturn
+    return toReturn
 
 
 def _stepBy(steps, key, startingNoteName):
@@ -239,7 +236,7 @@ def _stepBy(steps, key, startingNoteName):
     else:
         notesLen = len(vc.NOTES)
         goTo = startingIndex + steps
-        if (goTo > notesLen):
+        if (goTo >= notesLen):
             goTo = goTo - notesLen
         elif (goTo < 0):
             goTo = goTo + notesLen

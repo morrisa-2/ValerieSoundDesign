@@ -26,15 +26,22 @@ class Variation:
         else:
             self.intent = intent
 
-            if prototypical:
-                # Rhythm selection MUST occur before population--
-                # do not reorder these!!
+            if self.intent.getName() == "test":
                 self.rhythm = self.intent.getRhythm()
-                self.notes = self._protoPopulate()
+                if prototypical:
+                    # Rhythm selection MUST occur before population--
+                    # do not reorder these!!
+                    self.notes = self._protoPopulate()
+                else:
+                    # Same as above!!
+                    self.notes = self._populate()
             else:
-                # Same as above!!
-                self.rhythm = self._pickRhythm()
-                self.notes = self._populate()
+                if prototypical:
+                    self.rhythm = self.intent.getRhythm()
+                    self.notes = self._protoPopulate()
+                else:
+                    self.rhythm = self._pickRhythm()
+                    self.notes = self._populate()
 
     def __str__(self):
         """
@@ -89,7 +96,7 @@ class Variation:
         :return: The length of this variation in seconds as an integer.
         """
         rhythm = self.getRhythm()
-        totalBeats = sum(rhythm.getDurations())
+        totalBeats = sum(rhythm)
         tempo = self.intent.getTempo()
         beatsPerSecond = tempo / 60
         return totalBeats / beatsPerSecond
@@ -162,7 +169,7 @@ class Variation:
         :return: A list of Note objects with the desired
         pitches and rhythmic values.
         """
-        self._validateListOfNotes(applyTo)
+        self._validateListOfPitches(applyTo)
 
         length = len(self.rhythm)
         toReturn = []
@@ -210,7 +217,7 @@ class Variation:
         if(len(checkIntOf) < 1):
             raise Exception("checkIntOf must contain at least one note.")
         else:
-            self._validateListOfNotes(checkIntOf)
+            self._validateListOfPitches(checkIntOf)
             for note in checkIntOf[:-1]:
                 next = checkIntOf[i+1]
                 toReturn.append(vu.interval(note,next))
@@ -508,7 +515,7 @@ class Variation:
             randNote = random.choice(upperHalf)
             toReturn.append(randNote)
         elif (contour == Contour.ASCENDING):
-            lowerHalf = availablePitches[:len(availablePitches) / 2]
+            lowerHalf = availablePitches[:int(len(availablePitches) / 2)]
             randNote = random.choice(lowerHalf)
             toReturn.append(randNote)
         else:
