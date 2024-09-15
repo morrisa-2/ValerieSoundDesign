@@ -35,6 +35,7 @@ Brief explanation of qualities:
 '''
 
 import src.main.Python.Model.ValUtil as vu
+import src.main.Python.Model.ValConstants as vc
 from src.main.Python.Controllers.DBConnection import DBConnection
 from src.main.Python.Model.Modality import Modality, Modes
 from src.main.Python.Model.Pitch import Pitch
@@ -43,12 +44,14 @@ from src.main.Python.Model.Contour import Contour
 
 class Intent:
     # Instance vars
-    def __init__(self,name):
+    def __init__(self,name,):
         """
         Non-default constructor.
         :param name: Name of intent to model. Name must
         already be present in the database.
         """
+        if name == "test":
+            self._setForTest()
         validName = DBConnection.validateIntent(name)
         if not validName:
             raise ValueError("The given intent does not exist.")
@@ -103,6 +106,23 @@ class Intent:
             rhythm = Rhythm(self.name,durations)
 
             self.rhythm = rhythm
+
+    def _setForTest(self):
+        """
+        Manually sets up an intent for testing
+        without the database.
+        """
+        self.name = "test"
+        self.centralPitch = Pitch("C", 5)
+        self.pitchRange = 12
+        self.modality = vc.IONIAN
+        self.contour = Contour.ASCENDING
+        self.tempo = 100
+        self.keyCenter = "C"
+        self.centralInterval = 5
+        durations = [1, 1]
+        self.rhythm = Rhythm(self.name,durations)
+        self.rhythmLength = len(durations)
 
     # Getters
     def getCentralPitch(self):
