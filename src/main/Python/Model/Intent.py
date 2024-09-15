@@ -139,7 +139,7 @@ class Intent:
 
     def getAvailablePitches(self):
         """
-        Gets a list of all the pitches that this intent
+        Gets a tuple of all the pitches that this intent
         can play.
         :return: A tuple containing Note objects that
         represent this Intent's range of available pitches.

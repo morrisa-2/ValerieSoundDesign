@@ -10,6 +10,35 @@ class DBConnection:
     # TODO: Implement marked methods in DBConnection
 
     @staticmethod
+    def initialize():
+        """
+        Initialize the database and populate tables with initial values.
+        """
+        connection = DBConnection._connect()
+        cursor = connection.cursor()
+
+        # Open and read the file as a single buffer
+        fileName = "C:/Users/Aspen/PycharmProjects/ValSoundDesign/src/main/SQL/Init.sql"
+        fd = open(fileName, 'r')
+        sqlFile = fd.read()
+        fd.close()
+
+        # all SQL commands (split on ';')
+        sqlCommands = sqlFile.split(';')
+
+        # Execute every command from the input file
+        lineNum = 0
+        for command in sqlCommands:
+            # This will skip and report errors
+            # For example, if the tables do not yet exist, this will skip over
+            # the DROP TABLE commands
+            lineNum += 1
+            try:
+                cursor.execute(command)
+            except:
+                print("Failed on line {num}".format(num=lineNum))
+
+    @staticmethod
     def _connect():
         """
         Establishes a connection to the SQL database.
@@ -19,9 +48,8 @@ class DBConnection:
         """
         try:
             connection = mysql.connector.connect(
-                host = "localhost",
                 user = "root",
-                password = "Nziceai4!"
+                password = "Nziceai4!",
             )
             return connection
         except:
