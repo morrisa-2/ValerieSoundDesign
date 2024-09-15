@@ -15,7 +15,7 @@ class Pitch:
         else:
             self.noteName = name
             self.octave = octave
-            self.MIDI = vu.MIDIFromNote(self.noteName, self.octave)
+            self.MIDI = vu.MIDIFromPitch(self.noteName, self.octave)
             self.freq = self._nameToFreq()
 
     # TODO: Move to ValUtil and replace with Pitch

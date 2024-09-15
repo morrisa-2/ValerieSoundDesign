@@ -64,7 +64,7 @@ def validateNoteName(noteName):
     # If we've reached this point, the given note name is not valid.
     return False
 
-def MIDIFromPitch(pitch):
+def MIDIFromPitch(name, octave):
     """
     Gets the MIDI number associated with the given note.
     :param noteName: Note name to get MIDI number of, as a
@@ -76,29 +76,23 @@ def MIDIFromPitch(pitch):
     :return: An integer between 0-127, or -1 if the
     given note is not recognized
     """
-    if not isinstance(pitch, Pitch):
-        raise TypeError("Please input a Pitch object.")
-    else:
-        name = pitch.getName()
-        octave = pitch.getOctave()
-
-        i = 0
-        found = False
-        notesLength = len(vc.NOTES)
-        while (not found) and (i < notesLength):
-            item = vc.NOTES[i]
-            isTuple = isinstance(item, tuple)
-            if isTuple:
-                if name in item:
-                    found = True
-                    return i + (12 * (1 + octave))
-            else:
-                if name == item:
-                    found = True
-                    return i + (12 * (1 + octave))
-            i += 1
-        # If we've reached this point, the given note name is not valid.
-        return -1
+    i = 0
+    found = False
+    notesLength = len(vc.NOTES)
+    while (not found) and (i < notesLength):
+        item = vc.NOTES[i]
+        isTuple = isinstance(item, tuple)
+        if isTuple:
+            if name in item:
+                found = True
+                return i + (12 * (1 + octave))
+        else:
+            if name == item:
+                found = True
+                return i + (12 * (1 + octave))
+        i += 1
+    # If we've reached this point, the given note name is not valid.
+    return -1
 
 def _getNotesInRange(intent):
     """

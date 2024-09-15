@@ -70,7 +70,7 @@ class DBConnection:
                 raise RuntimeError("Cannot disconnect.")
 
     @staticmethod
-    # IMPLEMENT
+    # CURRENTLY ONLY WORKS FOR "test"
     def validateIntent(intentName):
         """
         Checks whether the given intent exists.
@@ -78,7 +78,7 @@ class DBConnection:
         :return: True if an intent of the given name
         exists in the DB, false otherwise.
         """
-        pass
+        return intentName == "test"
 
     @staticmethod
     # IMPLEMENT
