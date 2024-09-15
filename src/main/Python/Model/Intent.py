@@ -44,7 +44,7 @@ from src.main.Python.Model.Contour import Contour
 
 class Intent:
     # Instance vars
-    def __init__(self,name,):
+    def __init__(self,name):
         """
         Non-default constructor.
         :param name: Name of intent to model. Name must
@@ -52,60 +52,61 @@ class Intent:
         """
         if name == "test":
             self._setForTest()
-        validName = DBConnection.validateIntent(name)
-        if not validName:
-            raise ValueError("The given intent does not exist.")
         else:
-            # Gets a dictionary of info from the DB
-            info = DBConnection.getIntentInfo(name)
+            validName = DBConnection.validateIntent(name)
+            if not validName:
+                raise ValueError("The given intent does not exist.")
+            else:
+                # Gets a dictionary of info from the DB
+                info = DBConnection.getIntentInfo(name)
 
-            # Assigns info fetched from DB
-            self.name = info["intentName"]
+                # Assigns info fetched from DB
+                self.name = info["intentName"]
 
-            centralNote = info["centralNote"]
-            centralOctave = info["centralOctave"]
-            self.centralPitch = Pitch(centralNote,centralOctave)
+                centralNote = info["centralNote"]
+                centralOctave = info["centralOctave"]
+                self.centralPitch = Pitch(centralNote,centralOctave)
 
-            self.pitchRange = info["pitchRange"]
+                self.pitchRange = info["pitchRange"]
 
-            modeName = info["modality"].upper()
-            for enum in Modes:
-                if modeName in str(enum):
-                    self.modality = Modality(enum)
+                modeName = info["modality"].upper()
+                for enum in Modes:
+                    if modeName in str(enum):
+                        self.modality = Modality(enum)
 
-            if self.modality == None:
-                raise Exception("Unrecognized modality.")
+                if self.modality == None:
+                    raise Exception("Unrecognized modality.")
 
-            # DB stores as string; check values of enum in Contour.
-            contourInfo = info["contour"]
+                # DB stores as string; check values of enum in Contour.
+                contourInfo = info["contour"]
 
-            for enum in Contour:
-                if enum.value == contourInfo:
-                    self.contour = enum
+                for enum in Contour:
+                    if enum.value == contourInfo:
+                        self.contour = enum
 
-            # If self.contour hasn't been populated yet, the string
-            # from the DB is not recognized by Contour.
-            if self.contour == None:
-                raise Exception("Unrecognized contour.")
+                # If self.contour hasn't been populated yet, the string
+                # from the DB is not recognized by Contour.
+                if self.contour == None:
+                    raise Exception("Unrecognized contour.")
 
-            self.tempo = info["tempo"]
-            self.keyCenter = info["keyCenter"]
-            self.centralInterval = info["centralInterval"]
+                self.tempo = info["tempo"]
+                self.keyCenter = info["keyCenter"]
+                self.centralInterval = info["centralInterval"]
 
-            # Gets a dictionary of rhythm info from the DB
-            rhythmInfo = DBConnection.getRhythmByIntent(name)
+                # Gets a dictionary of rhythm info from the DB
+                rhythmInfo = DBConnection.getRhythmByIntent(name)
 
-            # Assigns rhythm info fetched from DB
-            self.rhythmLength = rhythmInfo["rhythmLength"]
+                # Assigns rhythm info fetched from DB
+                self.rhythmLength = rhythmInfo["rhythmLength"]
 
-            durations = []
-            for i in range(self.rhythmLength):
-                toAdd = rhythmInfo["dur{num}".format(num=i)]
-                durations.append(toAdd)
+                durations = []
+                for i in range(self.rhythmLength):
+                    toAdd = rhythmInfo["dur{num}".format(num=i)]
+                    durations.append(toAdd)
 
-            rhythm = Rhythm(self.name,durations)
+                rhythm = Rhythm(self.name,durations)
 
-            self.rhythm = rhythm
+                self.rhythm = rhythm
 
     def _setForTest(self):
         """
