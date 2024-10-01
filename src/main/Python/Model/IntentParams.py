@@ -25,6 +25,8 @@ class Alert:
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "C"
         toReturn["Interval"] = vc.TRI
+        durations = [2,2]
+        toReturn["Rhythm"] = Rhythm("Alert",durations)
         return toReturn
 
 
@@ -45,6 +47,8 @@ class Goodbye:
         toReturn["Tempo"] = vc.SLOW
         toReturn["Key"] = "D"
         toReturn["Interval"] = vc.P4
+        durations = [0.5, 2]
+        toReturn["Rhythm"] = Rhythm("Goodbye", durations)
         return toReturn
 
 class Hello:
@@ -64,6 +68,8 @@ class Hello:
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "D"
         toReturn["Interval"] = vc.MAJ3RD
+        durations = [1, 2]
+        toReturn["Rhythm"] = Rhythm("Hello", durations)
         return toReturn
 
 class No:
@@ -83,6 +89,8 @@ class No:
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "C"
         toReturn["Interval"] = vc.MIN2ND
+        durations = [0.5, 1]
+        toReturn["Rhythm"] = Rhythm("No", durations)
         return toReturn
 
 class Query:
@@ -102,6 +110,8 @@ class Query:
         toReturn["Tempo"] = vc.MODERATE
         toReturn["Key"] = "E"
         toReturn["Interval"] = vc.MAJ2ND
+        durations = [0.5, 1]
+        toReturn["Rhythm"] = Rhythm("Query", durations)
         return toReturn
 
 class ThankYou:
@@ -121,6 +131,8 @@ class ThankYou:
         toReturn["Tempo"] = vc.SLOW
         toReturn["Key"] = "A#"
         toReturn["Interval"] = vc.MAJ2ND
+        durations = [1, 0.5, 1]
+        toReturn["Rhythm"] = Rhythm("ThankYou", durations)
         return toReturn
 
 class Unsure:
@@ -140,6 +152,8 @@ class Unsure:
         toReturn["Tempo"] = vc.MODERATE
         toReturn["Key"] = "F"
         toReturn["Interval"] = vc.MIN3RD
+        durations = [0.5, 0.5, 2]
+        toReturn["Rhythm"] = Rhythm("Unsure", durations)
         return toReturn
 
 class Yes:
@@ -159,4 +173,6 @@ class Yes:
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "G"
         toReturn["Interval"] = vc.P4
+        durations = [0.5, 1]
+        toReturn["Rhythm"] = Rhythm("Yes", durations)
         return toReturn
