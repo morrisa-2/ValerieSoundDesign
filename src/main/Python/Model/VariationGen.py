@@ -11,6 +11,7 @@ Invariant:
 from src.main.Python.Model.Variation import Variation
 from src.main.Python.Controllers import SCConnection
 from src.main.Python.Model.Intent import Intent
+from time import sleep
 
 class VariationGen:
     def __init__(self,intent):
@@ -39,7 +40,9 @@ class VariationGen:
         which to store the generated wav file.
         """
         var = Variation(self.intent,prototypical)
+        duration = var.lengthInSeconds()
         self.connection.exportVariation(var,ordinal,filepath)
+        sleep(duration)
 
     def generate(self,numberToGen,filepath,prototypical=False):
         """
@@ -52,6 +55,7 @@ class VariationGen:
         # TODO: Check validity of filepath
         for i in range(numberToGen):
             self._generate(i,filepath,prototypical)
+
     def __str__(self):
         """
         Returns a string representation of this
