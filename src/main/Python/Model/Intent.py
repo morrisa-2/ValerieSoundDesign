@@ -41,17 +41,18 @@ from src.main.Python.Model.Modality import Modality, Modes
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Rhythm import Rhythm
 from src.main.Python.Model.Contour import Contour
+from src.main.Python.Model.IntentParams import *
 
 class Intent:
     # Instance vars
-    def __init__(self,name):
+    def __init__(self,name,test:bool=False):
         """
         Non-default constructor.
         :param name: Name of intent to model. Name must
         already be present in the database.
         """
-        if name == "test":
-            self._setForTest()
+        if test:
+            self._setForTest(name)
         else:
             validName = DBConnection.validateIntent(name)
             if not validName:
@@ -108,22 +109,52 @@ class Intent:
 
                 self.rhythm = rhythm
 
-    def _setForTest(self):
+    def _setForTest(self, name):
         """
         Manually sets up an intent for testing
         without the database.
         """
-        self.name = "test"
-        self.centralPitch = Pitch("C", 5)
-        self.pitchRange = 12
-        self.modality = vc.IONIAN
-        self.contour = Contour.ASCENDING
-        self.tempo = 100
-        self.keyCenter = "C"
-        self.centralInterval = 5
-        durations = [1, 1]
-        self.rhythm = Rhythm(self.name,durations)
-        self.rhythmLength = len(durations)
+        params = self._getIntentParams(name)
+        self.name = params["Name"]
+        self.centralPitch = params["CentralPitch"]
+        self.pitchRange = params["PitchRange"]
+        self.modality = params["Mode"]
+        self.contour = params["Contour"]
+        self.tempo = params["Tempo"]
+        self.key = params["Key"]
+        self.centralInterval = params["Interval"]
+        self.rhythm = params["Rhythm"]
+        self.rhythmLength = len(self.rhythm)
+
+    def _getIntentParams(self, name):
+        """
+        Given the name of an intent that is
+        already hardcoded into the IntentParams
+        class, return a dictionary of that intent's
+        parameters.
+        corresponds to that name.
+        :param name: Name of intent
+        :return: A dictionary of that intent's parameters
+        """
+        # This is really bad, and I know that
+        if name == "Alert":
+            return Alert().getParams()
+        elif name == "Goodbye":
+            return Goodbye().getParams()
+        elif name == "Hello":
+            return Hello().getParams()
+        elif name == "No":
+            return No().getParams()
+        elif name == "Query":
+            return Query().getParams()
+        elif name == "ThankYou":
+            return ThankYou().getParams()
+        elif name == "Unsure":
+            return Unsure().getParams()
+        elif name == "Yes":
+            return Yes().getParams()
+        else:
+            raise KeyError("Unrecognized intent name--please capitalize first letter of each word.")
 
     # Getters
     def getName(self):

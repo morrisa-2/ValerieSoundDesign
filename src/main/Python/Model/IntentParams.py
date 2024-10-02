@@ -5,7 +5,7 @@ Hard-coding intent info before the DB is functional
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Contour import Contour
 from src.main.Python.Model.Rhythm import Rhythm
-from src.main.Python.Model.Modality import Modes, Modality
+from src.main.Python.Model.Modality import Modes
 import src.main.Python.Model.ValConstants as vc
 
 class Alert:
@@ -123,7 +123,7 @@ class ThankYou:
         respective values.
         """
         toReturn = {}
-        toReturn["Name"] = "Query"
+        toReturn["Name"] = "ThankYou"
         toReturn["CentralPitch"] = Pitch("A#", 5)
         toReturn["PitchRange"] = 9
         toReturn["Mode"] = Modes.IONIAN
