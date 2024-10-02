@@ -15,8 +15,9 @@ from time import sleep
 
 class VariationGen:
     def __init__(self,intent):
-        self.intent = intent
-        self.connection = SCConnection.SCConnection()
+        self._intent = intent
+        self._connection = SCConnection.SCConnection()
+        self._initialize()
 
     def setIntent(self,intent):
         """
@@ -27,7 +28,13 @@ class VariationGen:
         if not (isinstance(intent,Intent)):
             raise TypeError("Intent argument must be an Intent object.")
         else:
-            self.intent = intent
+            self._intent = intent
+
+    def _initialize(self):
+        """
+        Sends a message to SCConnection to initialize the SynthDef.
+        """
+        self._connection.initialize()
 
     def _generate(self,ordinal,filepath,prototypical=False):
         """
@@ -39,9 +46,9 @@ class VariationGen:
         :param filepath: Path to the directory in
         which to store the generated wav file.
         """
-        var = Variation(self.intent,prototypical)
+        var = Variation(self._intent, prototypical)
         duration = var.lengthInSeconds()
-        self.connection.exportVariation(var,ordinal,filepath)
+        self._connection.exportVariation(var, ordinal, filepath)
         sleep(duration)
 
     def generate(self,numberToGen,filepath,prototypical=False):
@@ -63,4 +70,4 @@ class VariationGen:
         :return: A string representing this VariationGen.
         Ex. "VarGen: MyVarGen (Intent)"
         """
-        return "VarGen: " + self.__name__ + " (" + str(self.intent) + ")"
+        return "VarGen: " + self.__name__ + " (" + str(self._intent) + ")"

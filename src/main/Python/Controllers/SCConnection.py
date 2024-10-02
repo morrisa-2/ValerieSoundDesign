@@ -15,7 +15,7 @@ class SCConnection:
         ip = "127.0.0.1"
         self.client = SimpleUDPClient(ip,port)
 
-    def _initialize(self):
+    def initialize(self):
         """
         Sends a message to the SuperCollider synth to initialize the SynthDef.
         """
@@ -57,8 +57,6 @@ class SCConnection:
         file = filepath + fileName
 
         duration = variation.lengthInSeconds()
-
-        self._initialize()
 
         self.client.send_message("/filepath",file)
         self.client.send_message("/duration",duration)
