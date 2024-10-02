@@ -6,9 +6,9 @@ from VariationGen import VariationGen
 from Intent import Intent
 
 def main():
-    vargen = VariationGen(Intent("test"))
+    vargen = VariationGen(Intent(name="Hello",test=True))
     path = "/Users/Aspen/PycharmProjects/ValSoundDesign/generated/"
-    vargen.generate(1,path,True)
+    vargen.generate(5,path,True)
 
 if __name__ == "__main__":
     main()

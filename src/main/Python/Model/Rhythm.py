@@ -18,24 +18,25 @@ class Rhythm:
         element in the list must be numeric and can be a maximum
         of five notes long.
         """
-        if not DBConnection.validateIntent(intentName):
-            raise Exception("Unrecognized Intent name.")
+        # Ignore for testing purposes
+        # if not DBConnection.validateIntent(intentName):
+        #     raise Exception("Unrecognized Intent name.")
+        # else:
+        self.intentName = intentName
+        length = len(durations)
+        if length == 0:
+            raise Exception("Durations parameter must contain at least one value.")
+        elif not isinstance(durations,list):
+            raise TypeError("Durations parameter must be a list.")
+        elif len(durations) > 5:
+            raise Exception("Durations parameter must be at most five values long.")
         else:
-            self.intentName = intentName
-            length = len(durations)
-            if length == 0:
-                raise Exception("Durations parameter must contain at least one value.")
-            elif not isinstance(durations,list):
-                raise TypeError("Durations parameter must be a list.")
-            elif len(durations) > 5:
-                raise Exception("Durations parameter must be at most five values long.")
+            isNum = [isinstance(element,(float,int,complex)) for element in durations]
+            if False in isNum:
+                raise TypeError("Durations parameter must be a list of numeric values.")
             else:
-                isNum = [isinstance(element,(float,int,complex)) for element in durations]
-                if False in isNum:
-                    raise TypeError("Durations parameter must be a list of numeric values.")
-                else:
-                    durations = tuple([float(num) for num in durations])
-                    self.durations = durations
+                durations = tuple([float(num) for num in durations])
+                self.durations = durations
 
     def __str__(self):
         return " ".join([str(dur) for dur in self.durations])

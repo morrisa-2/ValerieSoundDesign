@@ -23,7 +23,7 @@ class Modality:
             self._mode = mode
 
     def __len__(self):
-        return len(self._mode)
+        return len(self._mode.value)
 
     def __getitem__(self, item):
-        return self._mode[item]
+        return self._mode.value[item]

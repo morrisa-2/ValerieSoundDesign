@@ -121,7 +121,7 @@ class Intent:
         self.modality = params["Mode"]
         self.contour = params["Contour"]
         self.tempo = params["Tempo"]
-        self.key = params["Key"]
+        self.keyCenter = params["Key"]
         self.centralInterval = params["Interval"]
         self.rhythm = params["Rhythm"]
         self.rhythmLength = len(self.rhythm)

@@ -5,7 +5,7 @@ Hard-coding intent info before the DB is functional
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Contour import Contour
 from src.main.Python.Model.Rhythm import Rhythm
-from src.main.Python.Model.Modality import Modes
+from src.main.Python.Model.Modality import Modes, Modality
 import src.main.Python.Model.ValConstants as vc
 
 class Alert:
@@ -20,7 +20,7 @@ class Alert:
         toReturn["Name"] = "Alert"
         toReturn["CentralPitch"] = Pitch("F#",7)
         toReturn["PitchRange"] = 11
-        toReturn["Mode"] = Modes.LYDIAN
+        toReturn["Mode"] = Modality(Modes.LYDIAN)
         toReturn["Contour"] = Contour.DESCENDING
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "C"
@@ -42,7 +42,7 @@ class Goodbye:
         toReturn["Name"] = "Goodbye"
         toReturn["CentralPitch"] = Pitch("F#", 5)
         toReturn["PitchRange"] = 8
-        toReturn["Mode"] = Modes.IONIAN
+        toReturn["Mode"] = Modality(Modes.IONIAN)
         toReturn["Contour"] = Contour.DESCENDING
         toReturn["Tempo"] = vc.SLOW
         toReturn["Key"] = "D"
@@ -63,7 +63,7 @@ class Hello:
         toReturn["Name"] = "Hello"
         toReturn["CentralPitch"] = Pitch("D", 5)
         toReturn["PitchRange"] = 9
-        toReturn["Mode"] = Modes.IONIAN
+        toReturn["Mode"] = Modality(Modes.IONIAN)
         toReturn["Contour"] = Contour.NO_PRIORITY
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "D"
@@ -84,7 +84,7 @@ class No:
         toReturn["Name"] = "No"
         toReturn["CentralPitch"] = Pitch("F#", 5)
         toReturn["PitchRange"] = 7
-        toReturn["Mode"] = Modes.AEOLIAN
+        toReturn["Mode"] = Modality(Modes.AEOLIAN)
         toReturn["Contour"] = Contour.DESCENDING
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "C"
@@ -105,7 +105,7 @@ class Query:
         toReturn["Name"] = "Query"
         toReturn["CentralPitch"] = Pitch("C#", 5)
         toReturn["PitchRange"] = 9
-        toReturn["Mode"] = Modes.AEOLIAN
+        toReturn["Mode"] = Modality(Modes.AEOLIAN)
         toReturn["Contour"] = Contour.ASCENDING
         toReturn["Tempo"] = vc.MODERATE
         toReturn["Key"] = "E"
@@ -126,7 +126,7 @@ class ThankYou:
         toReturn["Name"] = "ThankYou"
         toReturn["CentralPitch"] = Pitch("A#", 5)
         toReturn["PitchRange"] = 9
-        toReturn["Mode"] = Modes.IONIAN
+        toReturn["Mode"] = Modality(Modes.IONIAN)
         toReturn["Contour"] = Contour.DESCENDING
         toReturn["Tempo"] = vc.SLOW
         toReturn["Key"] = "A#"
@@ -147,7 +147,7 @@ class Unsure:
         toReturn["Name"] = "Unsure"
         toReturn["CentralPitch"] = Pitch("C#", 5)
         toReturn["PitchRange"] = 9
-        toReturn["Mode"] = Modes.AEOLIAN
+        toReturn["Mode"] = Modality(Modes.AEOLIAN)
         toReturn["Contour"] = Contour.NO_PRIORITY
         toReturn["Tempo"] = vc.MODERATE
         toReturn["Key"] = "F"
@@ -168,7 +168,7 @@ class Yes:
         toReturn["Name"] = "Yes"
         toReturn["CentralPitch"] = Pitch("G", 5)
         toReturn["PitchRange"] = 5
-        toReturn["Mode"] = Modes.IONIAN
+        toReturn["Mode"] = Modality(Modes.IONIAN)
         toReturn["Contour"] = Contour.ASCENDING
         toReturn["Tempo"] = vc.FAST
         toReturn["Key"] = "G"
