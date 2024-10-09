@@ -38,9 +38,9 @@ QUARTER = 1
 HALF = 2
 
 # TEMPO - Measured in BPM.
-SLOW = 150
-MODERATE = 200
-FAST = 300
+SLOW = 200
+MODERATE = 300
+FAST = 350
 
 # NOTES
 NOTES = (("B#","C"),("C#","Db"),"D",("D#","Eb"),
