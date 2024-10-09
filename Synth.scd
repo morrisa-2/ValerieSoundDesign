@@ -1,9 +1,3 @@
-NetAddr.langPort;
-
-OSCFunc.trace(hideStatusMsg: true)
-
-OSCFunc.trace(false)
-
 Routine({
 	s.boot;
 
@@ -13,8 +7,8 @@ Routine({
 
 	f; // Filepath
 	d; // Duration
-	p = List.new(2); // Pitches
-	r = List.new(2); // Rhythm
+	p; // Pitches
+	r; // Rhythm
 	v = SynthDef(\valerie, { |out, gate = 1,
 		freq = 440, freqlag = 0.1, detun = 1.008, pan = 0,
 		ffreq = 20000, ffreqMul = 3, ffreqDcy = 0.15, rq = 0.2,
@@ -41,7 +35,7 @@ Routine({
 		sig = RLPF.ar(sig, (ffreq * filtEg).clip(20, 20000), rq);
 
 		Out.ar(out, Pan2.ar(sig, pan, amp * eg));
-	});
+	}).add;
 
 
 	// Receives and returns filepath from Python.
@@ -57,7 +51,7 @@ Routine({
 	OSCdef.new(\duration, {
 		arg msg, time, addr, port;
 
-		d = msg[1] + 0.5;
+		d = msg[1] + 0.1;
 
 	}, "/duration");
 
@@ -97,7 +91,9 @@ Routine({
 			{ // If val is a boolean
 				if (msg[1] == true,
 					{ // If val is true
-						v.add;
+						v = MonoPortaVoicer(1, \valerie);
+						v.portaTime = 0.15;
+						v.add();
 					},
 					{ // If val is false
 						SynthDef.removeAt(\valerie);
@@ -115,6 +111,8 @@ Routine({
 	OSCdef.new(\pitches, {
 		arg msg;
 
+		p = List.new(msg.size);
+
 		for(1,msg.size-1){
 			arg i;
 			p.add(msg[i]);
@@ -126,6 +124,8 @@ Routine({
 
 	OSCdef.new(\rhythm, {
 		arg msg;
+
+		r = List.new(msg.size);
 
 		for(1,msg.size-1){
 			arg i;
@@ -149,8 +149,6 @@ Routine({
 
 	OSCdef.new(\generate, {
 
-		v = MonoPortaVoicer(1, \valerie);
-		v.portaTime = 0.15;
 		Routine({
 			var dur, pitch, pitches;
 
@@ -179,6 +177,7 @@ Routine({
 	}, "/generate");
 
 
+
 	/*OSCdef.new(\debug, {
 		arg msg;
 		if(msg[1] == true,{
@@ -190,6 +189,4 @@ Routine({
 
 }).play;
 
-
-
-s.freeAll
+s.freeAll;

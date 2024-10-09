@@ -27,3 +27,6 @@ class Modality:
 
     def __getitem__(self, item):
         return self._mode.value[item]
+
+    def __str__(self):
+        return str(self._mode)[6:].capitalize()

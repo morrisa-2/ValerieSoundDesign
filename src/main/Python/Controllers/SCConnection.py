@@ -56,6 +56,8 @@ class SCConnection:
         fileName = variation.nameOfIntent() + str(ordinal) + ".wav"
         file = filepath + fileName
 
+        print("filename: " + file)
+
         duration = variation.lengthInSeconds()
 
         self.client.send_message("/filepath",file)

@@ -3,6 +3,8 @@ A set of musical shorthands for use in programming Valerie's
 sound design engine.
 '''
 
+from src.main.Python.Model.IntentParams import *
+
 # STEPS
 WHOLESTEP = 2
 HALFSTEP = 1
@@ -46,8 +48,8 @@ NOTES = (("B#","C"),("C#","Db"),"D",("D#","Eb"),
          ("G#","Ab"),"A",("A#","Bb"),("B","Cb"))
 
 # CIRCLE OF FIFTHS - Rudimentary, just for determining what notes to take for what keys.
-RIGHT_OF_C = ("G","D","A","E","B","F#")
-LEFT_OF_C = ("F","Bb","Eb","Ab","Db","Gb")
+RIGHT_OF_C = ("G","D","A","E","B","F#","C#")
+LEFT_OF_C = ("F","Bb","Eb","Ab","Db","Gb","Cb")
 
 # OCTAVE - Range encompasses all MIDI notes
 OCTAVES = (-1,9)
@@ -58,3 +60,6 @@ MIDIMIN = 0
 
 # RHYTHM POOL
 RHYTHM_POOL = []
+
+# LIST OF VALID INTENTS - Use this while DB is not functional
+VALID_INTENTS = [Alert(),Goodbye(),Hello(),No(),Query(),Unsure(),Yes()]

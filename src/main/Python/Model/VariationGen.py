@@ -11,6 +11,7 @@ Invariant:
 from src.main.Python.Model.Variation import Variation
 from src.main.Python.Controllers import SCConnection
 from src.main.Python.Model.Intent import Intent
+from src.main.Python.Model import ValUtil as vu
 from time import sleep
 
 class VariationGen:
@@ -18,6 +19,7 @@ class VariationGen:
         self._intent = intent
         self._connection = SCConnection.SCConnection()
         self._initialize()
+        vu.populateRhythmPool(test=True)
 
     def setIntent(self,intent):
         """
@@ -49,7 +51,8 @@ class VariationGen:
         var = Variation(self._intent, prototypical)
         duration = var.lengthInSeconds()
         self._connection.exportVariation(var, ordinal, filepath)
-        sleep(duration)
+        print("duration: " + str(duration))
+        sleep(duration + 0.2)
 
     def generate(self,numberToGen,filepath,prototypical=False):
         """

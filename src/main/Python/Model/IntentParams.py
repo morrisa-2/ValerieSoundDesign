@@ -82,7 +82,7 @@ class No:
         """
         toReturn = {}
         toReturn["Name"] = "No"
-        toReturn["CentralPitch"] = Pitch("F#", 5)
+        toReturn["CentralPitch"] = Pitch("Eb", 5)
         toReturn["PitchRange"] = 7
         toReturn["Mode"] = Modality(Modes.AEOLIAN)
         toReturn["Contour"] = Contour.DESCENDING
@@ -103,7 +103,7 @@ class Query:
         """
         toReturn = {}
         toReturn["Name"] = "Query"
-        toReturn["CentralPitch"] = Pitch("C#", 5)
+        toReturn["CentralPitch"] = Pitch("F#", 5)
         toReturn["PitchRange"] = 9
         toReturn["Mode"] = Modality(Modes.AEOLIAN)
         toReturn["Contour"] = Contour.ASCENDING
@@ -124,12 +124,12 @@ class ThankYou:
         """
         toReturn = {}
         toReturn["Name"] = "ThankYou"
-        toReturn["CentralPitch"] = Pitch("A#", 5)
+        toReturn["CentralPitch"] = Pitch("Bb", 5)
         toReturn["PitchRange"] = 9
         toReturn["Mode"] = Modality(Modes.IONIAN)
         toReturn["Contour"] = Contour.DESCENDING
         toReturn["Tempo"] = vc.SLOW
-        toReturn["Key"] = "A#"
+        toReturn["Key"] = "Bb"
         toReturn["Interval"] = vc.MAJ2ND
         durations = [1, 0.5, 1]
         toReturn["Rhythm"] = Rhythm("ThankYou", durations)
@@ -145,7 +145,7 @@ class Unsure:
         """
         toReturn = {}
         toReturn["Name"] = "Unsure"
-        toReturn["CentralPitch"] = Pitch("C#", 5)
+        toReturn["CentralPitch"] = Pitch("Db", 5)
         toReturn["PitchRange"] = 9
         toReturn["Mode"] = Modality(Modes.AEOLIAN)
         toReturn["Contour"] = Contour.NO_PRIORITY

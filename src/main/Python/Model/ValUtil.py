@@ -1,9 +1,11 @@
 import random
+import inspect
 
 import src.main.Python.Model.ValConstants as vc
 from src.main.Python.Model.Rhythm import Rhythm
 from src.main.Python.Model.Pitch import Pitch
 from src.main.Python.Model.Intent import Intent
+import src.main.Python.Model.IntentParams as IntentParams
 
 from src.main.Python.Controllers.DBConnection import DBConnection
 
@@ -258,26 +260,19 @@ def _pickByKey(key,toPickFrom):
     :return: The note name which fits within the given key.
     """
     # Maybe there's a better way to do this?
-    if key == "C#":
-        return _takeSharp(toPickFrom)
-    elif key == "Cb":
-        return _takeFlat(toPickFrom)
-    elif key == "C":
-        return _takeNatural(toPickFrom)
+    sharpKey = key in vc.RIGHT_OF_C
+    flatKey = key in vc.LEFT_OF_C or key == "C"
+    if not (flatKey or sharpKey):
+        raise Exception("Unrecognized key.")
     else:
-        sharpKey = key in vc.RIGHT_OF_C
-        flatKey = key in vc.LEFT_OF_C
-        if not (flatKey or sharpKey):
-            raise Exception("Unrecognized key.")
+        natural = _takeNatural(toPickFrom)
+        if natural != None:
+            return natural
         else:
-            natural = _takeNatural(toPickFrom)
-            if natural != None:
-                return natural
+            if (sharpKey):
+                return _takeSharp(toPickFrom)
             else:
-                if (sharpKey):
-                    return _takeSharp(toPickFrom)
-                else:
-                    return _takeFlat(toPickFrom)
+                return _takeFlat(toPickFrom)
 
 def _takeSharp(toPickFrom):
     """
@@ -368,15 +363,28 @@ def _getNoteIndex(noteName:str, toIndex:list):
     # is not in ValConstants' list of notes.
     return -1
 
-def populateRhythmPool():
+def populateRhythmPool(test:bool=False):
     """
     Populates the rhythm pool in ValConstants with all rhythms
     available in the database.
     """
-    allDurs = DBConnection.getAllRhythms()
-    items = allDurs.items()
-    for item in items:
-        toAdd = Rhythm(item[0],item[1])
+    if test:
+        _testPop()
+    else:
+        allDurs = DBConnection.getAllRhythms()
+        items = allDurs.items()
+        for item in items:
+            toAdd = Rhythm(item[0],item[1])
+            vc.RHYTHM_POOL.append(toAdd)
+
+def _testPop():
+    """
+    Populates the rhythm pool with all rhythms that are
+    hardcoded into the IntentParams module, for use only
+    while the DB is not functional.
+    """
+    for intent in vc.VALID_INTENTS:
+        toAdd = intent.getParams()["Rhythm"]
         vc.RHYTHM_POOL.append(toAdd)
 
 def addRhythmToPool(rhythm:Rhythm):

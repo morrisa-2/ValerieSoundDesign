@@ -252,8 +252,8 @@ class Variation:
         :param addTo: List to add the next pitch to.
         :return: toAdd with an additional note appended.
         """
-        self._validateListOfNotes(addTo)
-        self._validateListOfNotes(availablePitches)
+        self._validateListOfPitches(addTo)
+        self._validateListOfPitches(availablePitches)
 
         intent = self.getIntent()
         contour = intent.getContour()
@@ -342,7 +342,8 @@ class Variation:
         pitchesRemaining = len(self.rhythm) - len(addTo)
 
         if (pitchesRemaining <= 0):
-            raise Exception("Cannot add notes beyond the length of this intent.")
+            # Returns the original list with no additions
+            return addTo
         else:
             if (pitchesRemaining == 1 and centralMissing and intervalMissing):
                 return self._chooseToSupersede(availablePitches, addTo)
@@ -511,7 +512,7 @@ class Variation:
         contour = self.intent.getContour()
 
         if (contour == Contour.DESCENDING):
-            upperHalf = availablePitches[len(availablePitches) / 2:]
+            upperHalf = availablePitches[int(len(availablePitches) / 2):]
             randNote = random.choice(upperHalf)
             toReturn.append(randNote)
         elif (contour == Contour.ASCENDING):
